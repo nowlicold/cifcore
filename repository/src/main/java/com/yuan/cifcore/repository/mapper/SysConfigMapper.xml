@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuan.cifcore.repository.mapper.SysConfigMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        config_name, config_value, gmt_modified, modifier, type, memo, config_area, config_value_big, config_name_reference, config_area_reference
+    </sql>
+
+</mapper>

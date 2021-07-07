@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_third_one_auth_mapping_cfg">
+	<operation name="insert">
+		<sql>insert into cif_third_one_auth_mapping_cfg
+			(id,third_channel_code,third_channel_name,enabled,gmt_create,gmt_modified)
+			values
+			(?,?,?,?,?,?,@db@.sysdate,@db@.sysdate)
+		</sql>
+	</operation>
+	<operation name="selectAll" multiplicity="many">
+		<sql>
+			select
+			id,third_channel_code,third_channel_name,enabled,gmt_create,gmt_modified
+			from
+			cif_third_one_auth_mapping_cfg
+		</sql>
+	</operation>
+	<operation name="selectByMaxGmtModified" multiplicity="many">
+		<sql>
+			select
+			id,third_channel_code,third_channel_name,enabled,gmt_create,gmt_modified
+			from
+			cif_third_one_auth_mapping_cfg where gmt_modified &gt; ?
+		</sql>
+	</operation>
+</table>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_platform_login" sequence="seq_cif_user_platform_login">
+    <operation name="insert">
+        <sql>
+            insert into cif_user_platform_login
+            (id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+            logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+            gmt_modified,logged,logged_device_type,logged_device_info)
+            values
+            (?,?,?,?,?,?,?,?,?,?,?,?,@db@.sysdate,@db@.sysdate,?,?,?)
+        </sql>
+    </operation>
+    <operation name="selectById">
+        <sql>
+            select
+            id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+            logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+            gmt_modified,logged,logged_device_type,logged_device_info
+            from
+            cif_user_platform_login where id=?
+        </sql>
+    </operation>
+    <operation name="selectByIdForUpdate">
+        <sql>
+            select
+            id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+            logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+            gmt_modified,logged,logged_device_type,logged_device_info
+            from
+            cif_user_platform_login where id=? for update nowait
+        </sql>
+    </operation>
+    <operation name="selectByLoggedLoginKey">
+        <sql>
+            select
+            id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+            logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+            gmt_modified,logged,logged_device_type,logged_device_info
+            from
+            cif_user_platform_login where logged_login_key=?
+        </sql>
+    </operation>
+    <operation name="selectLoggedByUserIdAndPlatformType" multiplicity="many">
+        <sql>
+            select
+            id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+            logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+            gmt_modified,logged,logged_device_type,logged_device_info
+            from
+            cif_user_platform_login where user_id=? and
+            logged_platform_type=? and
+            logged=1 order by gmt_create desc
+        </sql>
+    </operation>
+    <operation name="selectLoggedSessionIdsByUserIdAndPlatformType" multiplicity="many">
+        <sql>
+            select logged_login_session_id
+            from
+            cif_user_platform_login where
+            user_id=? and
+            logged_platform_type=? and
+            logged=1 and
+            logged_login_session_id is not null
+        </sql>
+    </operation>
+    <operation name="selectLoggedByUserIdsAndPlatformType" multiplicity="many">
+        <extraparams>
+            <param name="userIds" javatype="java.util.List"/>
+            <param name="platformType" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select
+            id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+            logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+            gmt_modified,logged,logged_device_type,logged_device_info
+            from
+            cif_user_platform_login where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+			logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+			gmt_modified,logged,logged_device_type,logged_device_info
+			  from cif_user_platform_login where user_id in
+			<foreach open="(" close=")" separator="," collection="userIds" item="item">
+						#userIds[]#
+			</foreach>
+			 and logged_platform_type=#platformType# and logged=1 and logged_login_session_id is not null
+		]]>
+        </sqlmap>
+    </operation>
+    <operation name="selectUserIdAndLoggedSessionIdsByUserIdsAndPlatformType" multiplicity="many" resultClass="java.util.Map">
+        <extraparams>
+            <param name="userIds" javatype="java.util.List"/>
+            <param name="platformType" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select user_id,logged_login_session_id
+            from
+            cif_user_platform_login where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select user_id,logged_login_session_id
+			  from cif_user_platform_login where user_id in
+			<foreach open="(" close=")" separator="," collection="userIds" item="item">
+						#userIds[]#
+			</foreach> and logged_platform_type=#platformType# and logged=1 and logged_login_session_id is not null
+		]]>
+        </sqlmap>
+    </operation>
+    <operation name="updateLoginSuccess">
+        <sql>
+            update cif_user_platform_login set
+            logged_login_name=?,gmt_success=@db@.sysdate,gmt_modified=@db@.sysdate,logged_login_ip=?,logged_login_session_id=?,
+            logged_login_key=?,logged_sign_key=?,logged_crypt_key=?,logged_crypt_key_type=?,logged=1,logged_device_type=?,logged_device_info=?
+            where id=?
+        </sql>
+    </operation>
+
+    <operation name="selectMaxPlatformLoginSeqByUserIdAndPlatformType">
+        <sql>
+            select max(platform_login_seq) from
+            cif_user_platform_login where
+            user_id=? and logged_platform_type=?
+        </sql>
+    </operation>
+    <operation name="selectEarliestLogoutIdByUserIdPlatformTypeAndMaxPlatformLoginSeq" limitAmountValue="1">
+        <sql>
+            select id from cif_user_platform_login where user_id=? and
+            logged_platform_type=? and logged=0 and
+            platform_login_seq &lt;= ?
+            order by gmt_success
+            asc
+        </sql>
+    </operation>
+    <operation name="selectEarliestLoggedIdByUserIdPlatformTypeAndMaxPlatformLoginSeq" limitAmountValue="1">
+        <sql>
+            select
+            id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+            logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+            gmt_modified,logged,logged_device_type,logged_device_info from
+            cif_user_platform_login where
+            user_id=? and
+            logged_platform_type=?
+            and
+            platform_login_seq &lt;=?
+            order by gmt_success
+            asc
+        </sql>
+    </operation>
+    <operation name="selectByUserIdAndPlatformTypeAndLoginSessinId">
+        <sql>
+            select
+            id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+            logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+            gmt_modified,logged,logged_device_type,logged_device_info from
+            cif_user_platform_login where
+            user_id=? and
+            logged_platform_type=?
+            and logged_login_session_id=? and logged=1
+        </sql>
+    </operation>
+    <operation name="selectByUserIdAndPlatformTypeAndLoginKey">
+        <sql>
+            select
+            id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+            logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+            gmt_modified,logged,logged_device_type,logged_device_info from
+            cif_user_platform_login where
+            user_id=? and
+            logged_platform_type=?
+            and logged_login_key=? and logged=1
+        </sql>
+    </operation>
+    <operation name="updateLogoutById">
+        <sql>
+            update cif_user_platform_login set
+            logged=0,gmt_modified=@db@.sysdate
+            where id=?
+        </sql>
+    </operation>
+    <operation name="updateLogoutByLoginKey">
+        <sql>
+            update cif_user_platform_login set
+            logged=0,gmt_modified=@db@.sysdate
+            where logged_login_key=?
+        </sql>
+    </operation>
+    <operation name="updateLogoutByLoggedLoginSessionId">
+        <sql>
+            update cif_user_platform_login set
+            logged=0,gmt_modified=@db@.sysdate
+            where logged_login_session_id=?
+        </sql>
+    </operation>
+    <operation name="updateLogoutByLoggedLoginSessionIds">
+        <extraparams>
+            <param name="loggedLoginSessionIds" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            update cif_user_platform_login set
+            logged=0,gmt_modified=@db@.sysdate
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			update cif_user_platform_login set
+			logged=0,gmt_modified=@db@.sysdate where logged_login_session_id in
+			<foreach open="(" close=")" separator="," collection="loggedLoginSessionIds" item="item">
+						#loggedLoginSessionIds[]#
+			</foreach>
+		]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectLoggedLoginSessionIdsByUserIds" multiplicity="many">
+        <extraparams>
+            <param name="userIds" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            select
+            id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+            logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+            gmt_modified,logged,logged_device_type,logged_device_info from
+            cif_user_platform_login where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select
+			id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+			logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+			gmt_modified,logged,logged_device_type,logged_device_info from
+			cif_user_platform_login where user_id in
+			<foreach open="(" close=")" separator="," collection="userIds" item="item">
+						#userIds[]#
+			</foreach>
+			and logged=1 and logged_login_session_id is not null
+		]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectLoggedByUserId" multiplicity="many">
+        <sql>
+            select
+            id,user_id,logged_login_name,logged_platform_type,gmt_success,logged_login_ip,logged_login_session_id,logged_login_key,
+            logged_sign_key,logged_crypt_key,logged_crypt_key_type,platform_login_seq,gmt_create,
+            gmt_modified,logged,logged_device_type,logged_device_info from
+            cif_user_platform_login where user_id = ? and logged=1
+        </sql>
+    </operation>
+</table>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="CIF_THIRD_USER_MAPPING_HIS" doname="ThirdUserMappingHis" sequence="seq_cif_third_user_mapping_his">
+    <operation name="insert">
+        <sql>
+            insert into cif_third_user_mapping_his
+            (id, third_user_id,
+            third_channel, third_login_name, third_user_name,
+            properties,
+            gmt_create, gmt_modified, user_id, domain,
+            third_parent_user_id)
+            values
+            (?, ?, ?, ?,
+            ?, ?, @db@.sysdate, @db@.sysdate,
+            ?, ?, ?);
+        </sql>
+    </operation>
+    <operation name="selectById">
+        <sql>
+            select id, third_user_id,
+            third_channel, third_login_name, third_user_name,
+            properties,
+            gmt_create, gmt_modified, user_id, domain,
+            third_parent_user_id
+            from
+            cif_third_user_mapping_his
+            where id=?
+        </sql>
+    </operation>
+    <operation name="selectLatestByUserIdAndDomain">
+        <extraparams>
+            <param name="domain" javatype="java.lang.String"/>
+            <param name="userId" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select id, third_user_id,
+            third_channel, third_login_name, third_user_name,
+            properties,
+            gmt_create, gmt_modified, user_id, domain,
+            third_parent_user_id
+            from
+            cif_third_user_mapping_his
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select * from (
+				select id, third_user_id,
+				third_channel, third_login_name, third_user_name,
+				properties,
+				gmt_create, gmt_modified, user_id, domain,
+				third_parent_user_id
+				from
+				cif_third_user_mapping_his  
+				<where>
+						<if test="userId != null and userId != ''">
+								and user_id=#userId#
+		                </if>
+		                <if test="domain != null and domain != ''">
+								and domain=#domain#
+		                </if>
+	             </where>
+	             order by gmt_create desc
+	             ) where rownum=1
+			]]>
+        </sqlmap>
+    </operation>
+    <operation name="selectThirdChannelAndMaxGmtCreateMapByUserIdAndThirdChannels" multiplicity="many" resultClass="java.util.HashMap">
+        <extraparams>
+            <param name="userId" javatype="java.lang.String"/>
+            <param name="thirdChannels" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            select third_channel CHANNEL, max(gmt_create) GMTCREATE
+            from
+            cif_third_user_mapping_his
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+				select third_channel CHANNEL, max(gmt_create)  GMTCREATE
+				from
+				cif_third_user_mapping_his
+				<where>
+						<if test="userId != null and userId != ''">
+							and user_id=#userId#
+		                </if>
+		                <foreach open=" and third_channel in (" close=")" separator="," collection="thirdChannels" item="item">
+							#thirdChannels[]#
+						</foreach>
+				</where>
+				group by third_channel
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectByThirdChannelsAndUserId" multiplicity="many">
+        <extraparams>
+            <param name="userId" javatype="java.lang.String"/>
+            <param name="thirdChannels" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            select id, third_user_id,
+            third_channel, third_login_name, third_user_name,
+            properties,
+            gmt_create, gmt_modified, user_id, domain,
+            third_parent_user_id
+            from
+            cif_third_user_mapping_his
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+				select id, third_user_id,
+			third_channel, third_login_name, third_user_name,
+			properties,
+			gmt_create, gmt_modified, user_id, domain,
+			third_parent_user_id
+				from
+				cif_third_user_mapping_his
+				<where>
+						<if test="userId != null and userId != ''">
+							and user_id=#userId#
+		                </if>
+		                <foreach open=" and third_channel in (" close=")" separator="," collection="thirdChannels" item="item">
+							#thirdChannels[]#
+						</foreach>
+				</where>
+			]]>
+        </sqlmap>
+    </operation>
+    <operation name="search" multiplicity="many" paging="true">
+        <extraparams>
+            <param name="thirdUserId" javatype="java.lang.String"/>
+            <param name="thirdChannel" javatype="java.lang.String"/>
+            <param name="thirdLoginName" javatype="java.lang.String"/>
+            <param name="thirdUserName" javatype="java.lang.String"/>
+            <param name="userId" javatype="java.lang.String"/>
+            <param name="domain" javatype="java.lang.String"/>
+            <param name="thirdParentUserId" javatype="java.lang.String"/>
+            <param name="minGmtCreate" javatype="java.util.Date"/>
+            <param name="maxGmtCreate" javatype="java.util.Date"/>
+        </extraparams>
+        <sql>
+            select id, third_user_id,
+            third_channel, third_login_name, third_user_name,
+            properties,
+            gmt_create, gmt_modified, user_id, domain,
+            third_parent_user_id
+            from
+            cif_third_user_mapping_his
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+				select id, third_user_id,
+			    third_channel, third_login_name, third_user_name,
+			    properties,
+			    gmt_create, gmt_modified, user_id, domain,
+			    third_parent_user_id
+			    from
+			    cif_third_user_mapping_his
+				 <where>
+						  	<if test="thirdUserId != null and thirdUserId != ''">
+							    	and third_user_id=#thirdUserId#
+                            </if>
+						  	<if test="userId != null and userId != ''">
+							    	and user_id=#userId#
+                            </if>
+                            <if test="thirdUserName != null and thirdUserName != ''">
+							    	and third_user_name like #thirdUserName#
+                            </if>
+                 			<if test="thirdLoginName != null and thirdLoginName != ''">
+							    	and third_login_name like #thirdLoginName#
+                            </if>
+                            <if test="thirdChannel != null and thirdChannel != ''">
+							    	and third_channel=#thirdChannel#
+                            </if>
+                             <if test="domain != null and domain != ''">
+							    	and domain=#domain#
+                            </if>
+                            <if test="thirdParentUserId != null and thirdParentUserId != ''">
+							    	and third_parent_user_id=#thirdParentUserId#
+                            </if>
+ 				            <if test="minGmtCreate != null">
+					            and gmt_create &gt;=#minGmtCreate#
+				            </if>
+				            <if test="maxGmtCreate != null">
+					            and gmt_create &lt;=#maxGmtCreate#
+				            </if>
+              	</where>
+              	order by gmt_create desc, id desc
+			]]>
+
+        </sqlmap>
+    </operation>
+</table>

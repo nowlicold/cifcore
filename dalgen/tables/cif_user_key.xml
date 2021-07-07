@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd">
+<table sqlname="cif_user_key" sequence="seq_cif_user_key">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_key
+			(id,user_id,key_type,key_value,gmt_create,gmt_modified,gmt_expired,apply_parameters,used,gmt_used,used_parameters)
+			values(?,?,?,?,@db@.sysdate,@db@.sysdate,?,?,?,?,?)
+		</sql>
+	</operation>
+	<operation name="selectById">
+		<sql>
+			select
+			id,user_id,key_type,key_value,gmt_create,gmt_modified,gmt_expired,apply_parameters,used,gmt_used,used_parameters
+			from cif_user_key where id=?
+		</sql>
+	</operation>
+	<operation name="selectByKey">
+		<sql>
+			select
+			id,user_id,key_type,key_value,gmt_create,gmt_modified,gmt_expired,apply_parameters,used,gmt_used,used_parameters
+			from cif_user_key where key_value=?
+		</sql>
+	</operation>
+	<operation name="updateUsedByKey">
+		<sql>
+			update cif_user_key set
+			gmt_used=@db@.sysdate,gmt_modified=@db@.sysdate,used=1,used_parameters=? where
+			key_value=?
+		</sql>
+	</operation>
+</table>

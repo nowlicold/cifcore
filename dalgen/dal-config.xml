@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tables SYSTEM "http://benchframework.org/schema/dalgen/dalgen-config.dtd">
+<tables>
+	<!-- ========================================================== -->
+	<!-- The typemap("Type Map") maps from one java type to another -->
+	<!-- java type. If you feel the original sql data type to java -->
+	<!-- type mapping is not satisfactory, you can use typemap to -->
+	<!-- convert it to a more appropriate one. -->
+	<!-- ========================================================== -->
+	<tableprefix prefix="cif" />
+
+	<include table="tables/cif_user.xml" />
+	<include table="tables/cif_user_relation.xml" />
+	<include table="tables/cif_user_register.xml" />
+	<include table="tables/cif_user_login_process.xml" />
+	<include table="tables/cif_user_login_pwd_verify.xml" />
+	<include table="tables/cif_user_account_pwd_verify.xml" />
+	<include table="tables/cif_user_platform_login.xml" />
+	<include table="tables/cif_user_login_name.xml" />
+	<include table="tables/cif_user_platform_config.xml" />
+	<include table="tables/cif_one_auth.xml" />
+	<include table="tables/cif_one_auth_register.xml" />
+	<include table="tables/cif_one_auth_login_process.xml" />
+	<include table="tables/cif_one_auth_platform_login.xml" />
+	<include table="tables/cif_one_auth_login_pwd_verify.xml" />
+	<include table="tables/cif_one_auth_log.xml" />
+	<include table="tables/cif_one_auth_validated_cell.xml" />
+	<include table="tables/cif_one_auth_platform_config.xml" />
+	<include table="tables/cif_user_ext.xml" />
+	<include table="tables/cif_user_log.xml" />
+	<include table="tables/cif_user_logo.xml" />
+	<include table="tables/cif_third_user_mapping.xml" />
+	<include table="tables/cif_level_property.xml" />
+	<include table="tables/cif_user_level.xml" />
+	<include table="tables/cif_user_profile.xml" />
+	<include table="tables/cif_register_from_config.xml" />
+	<include table="tables/cif_user_login_name_deleted.xml" />
+	<include table="tables/cif_register_from_type.xml" />
+	<include table="tables/cif_register_from_cfg_domain.xml" />
+	<include table="tables/cif_user_validated_cell.xml" />
+	<include table="tables/cif_user_key.xml" />
+	<include table="tables/cif_user_Key_config.xml" />
+	<include table="tables/cif_cell_black.xml" />
+	<include table="tables/cif_user_type.xml" />
+	<include table="tables/cif_registrable_cell.xml" />
+	<include table="tables/cif_user_logo_gather.xml" />
+	<include table="tables/cif_system_logo.xml" />
+	<include table="tables/cif_system_logo_group.xml" />
+	<include table="tables/cif_domain_config.xml" />
+	<include table="tables/cif_sub_domain_config.xml" />
+	<include table="tables/cif_user_role.xml" />
+	<include table="tables/cif_user_role_name_change_log.xml" />
+	<include table="tables/cif_user_login_name_change_log.xml" />
+	<include table="tables/cif_third_user_mapping_config.xml" />
+	<include table="tables/cif_user_geographic.xml" />
+	<include table="tables/cif_user_geographic_his.xml" />
+	<include table="tables/cif_forbidden_action_type.xml" />
+	<include table="tables/cif_forbidden_log.xml" />
+	<include table="tables/cif_forbidden.xml" />
+	<include table="tables/cif_third_user_mapping_his.xml" />
+	<include table="tables/cif_user_ip_history.xml" />
+	<include table="tables/cif_user_current_ip.xml" />
+	<include table="tables/cif_third_one_auth_mapping_cfg.xml" />
+	<include table="tables/cif_third_one_auth_mapping_his.xml" />
+	<include table="tables/cif_third_one_auth_mapping.xml" />
+	<include table="tables/one_auth_identity_photo_apply.xml" />
+	<include table="tables/one_auth_identity_photo.xml" />
+	<include table="tables/cif_one_auth_login_name.xml" />
+	<include table="tables/user_identity_change_apply.xml" />
+	<include table="tables/user_identity_change_apply_img.xml" />
+
+
+</tables>

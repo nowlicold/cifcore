@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="one_auth_identity_photo_apply">
+    <operation name="insert">
+        <sql>
+            insert into one_auth_identity_photo_apply
+            (id, one_auth_id, creater, auditor, status, gmt_create, gmt_modified, gmt_audit, front_photo_resources_id,
+            back_photo_resources_id,audit_memo)
+            values
+            (?, ?, ?, ?, ?, @db@.sysdate, @db@.sysdate, ?, ?, ?,?);
+        </sql>
+    </operation>
+    <operation name="updateAuditById">
+        <sql>
+            update one_auth_identity_photo_apply set auditor=? , status=? , gmt_audit=sysdate,audit_memo=?
+            where id=?
+        </sql>
+    </operation>
+    <operation name="selectById">
+        <sql>
+            select id, one_auth_id, creater, auditor, status, gmt_create, gmt_modified, gmt_audit,
+            front_photo_resources_id,
+            back_photo_resources_id,audit_memo from one_auth_identity_photo_apply where id=?
+        </sql>
+    </operation>
+    <operation name="selectByIdForUpdate">
+        <sql>
+            select id, one_auth_id, creater, auditor, status, gmt_create, gmt_modified, gmt_audit,
+            front_photo_resources_id,
+            back_photo_resources_id,audit_memo from one_auth_identity_photo_apply where id=? for update nowait
+        </sql>
+    </operation>
+    <operation name="selectByOneAuthId" multiplicity="many">
+        <sql>
+            select id, one_auth_id, creater, auditor, status, gmt_create, gmt_modified, gmt_audit,
+            front_photo_resources_id,
+            back_photo_resources_id,audit_memo from one_auth_identity_photo_apply where one_auth_id=?
+        </sql>
+    </operation>
+    <operation name="search" multiplicity="many" paging="true">
+        <extraparams>
+            <param name="oneAuthId" javatype="java.lang.String"/>
+            <param name="status" javatype="java.lang.String"/>
+            <param name="beginCreateDate" javatype="java.util.Date"/>
+            <param name="endCreateDate" javatype="java.util.Date"/>
+            <param name="beginAuditDate" javatype="java.util.Date"/>
+            <param name="endAuditDate" javatype="java.util.Date"/>
+        </extraparams>
+        <sql>
+            select id, one_auth_id, creater, auditor, status, gmt_create, gmt_modified, gmt_audit,
+            front_photo_resources_id,
+            back_photo_resources_id,audit_memo from one_auth_identity_photo_apply where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+                select id, one_auth_id, creater, auditor, status, gmt_create, gmt_modified, gmt_audit,
+                front_photo_resources_id,
+                back_photo_resources_id,audit_memo from one_auth_identity_photo_apply
+                <where>
+           	 	    <if test="oneAuthId != null and oneAuthId != ''">
+		 			    and one_auth_id = #oneAuthId#
+				    </if>
+                    <if test="status != null and status != ''">
+                        and status = #status#
+				    </if>
+				    <if test="beginCreateDate != null">
+				    	and gmt_create &gt;=#beginCreateDate#
+				    </if>
+				    <if test="endCreateDate != null">
+				    	and gmt_create &lt;=#endCreateDate#
+				    </if>
+				    <if test="beginAuditDate != null">
+				    	and gmt_audit &gt;=#beginAuditDate#
+				    </if>
+				    <if test="endAuditDate != null">
+				    	and gmt_audit &lt;=#endAuditDate#
+				    </if>
+             </where>
+            ]]>
+        </sqlmap>
+    </operation>
+</table>

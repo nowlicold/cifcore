@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuan.cifcore.repository.mapper.SysThreadPoolConfigMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, thread_pool_name, core_pool_size, max_pool_size, keep_alive_seconds, queue_capacity, allow_core_thread_time_out, reject_policy, rejected_execution_handler, allow_create_host_names, allow_create_host_groups, gmt_create, gmt_modified, enabled
+    </sql>
+
+</mapper>

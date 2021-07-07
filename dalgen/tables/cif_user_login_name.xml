@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_login_name" sequence="seq_cif_user_login_name">
+	<column name="validated" javaType="boolean"/>
+	<operation name="insert">
+		<sql>
+			insert into cif_user_login_name
+			(id, user_id, login_name,
+			login_name_type, gmt_create,
+			gmt_modified,gmt_last_login,change_stage)
+			values
+			(?, ?,
+			?, ?,
+			@db@.sysdate,
+			@db@.sysdate, ?,?)
+		</sql>
+	</operation>
+
+	<operation name="selectByLoginName">
+		<sql>
+			select id, user_id, login_name, login_name_type, gmt_create,
+			gmt_modified,gmt_last_login,change_stage from
+			cif_user_login_name
+			where
+			login_name=?
+		</sql>
+	</operation>
+	<operation name="selectUserIdbyLoginName">
+		<sql>
+			select user_id from cif_user_login_name
+			where
+			login_name=?
+		</sql>
+	</operation>
+
+	<operation name="selectCountByLoginName">
+		<sql>
+			select count(*) from
+			cif_user_login_name where login_name=?
+		</sql>
+	</operation>
+
+	<operation name="deleteByUserIdAndLoginName">
+		<sql>
+			delete from cif_user_login_name where user_id=? and login_name=?
+		</sql>
+	</operation>
+
+	<!-- 根据UserId查询用户信息 -->
+	<operation name="selectByUserId" multiplicity="many">
+		<sql>
+			select id, user_id, login_name, login_name_type, gmt_create,
+			gmt_modified,gmt_last_login,change_stage from
+			cif_user_login_name
+			where
+			user_id=?
+		</sql>
+	</operation>
+	<!-- 根据登录名查询已存在的登录名 -->
+	<operation name="selectLoginNamesByLoginNames" multiplicity="many">
+		<extraparams>
+			<param name="loginNames" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select login_name from
+			cif_user_login_name where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select login_name from
+			cif_user_login_name where login_name in 
+			<foreach open="(" close=")" separator="," collection="loginNames" item="item"> 
+				#loginNames[]# 
+			</foreach>
+			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="updateNewLoginNameByUserIdAndOldLoginName">
+		<extraparams>
+			<param name="newLoginName" javatype="java.lang.String"/>
+			<param name="userId" javatype="java.lang.String"/>
+			<param name="oldLoginName" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			update cif_user_login_name
+			set gmt_modified=@db@.sysdate
+			where 1=0
+		</sql>
+		<sqlmap>
+			update cif_user_login_name
+			set login_name=#newLoginName#,
+			gmt_modified=@db@.sysdate
+			where user_id=#userId# and
+			login_name=#oldLoginName#
+		</sqlmap>
+	</operation>
+	
+	<operation name="updateLoginNameByUserIdAndLoginNameType">
+		<sql>
+			update cif_user_login_name 
+			set login_name=? , gmt_modified=@db@.sysdate 
+			where user_id=? and login_name_type=?
+		</sql>
+	</operation>
+</table>

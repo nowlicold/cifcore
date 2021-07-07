@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_one_auth_platform_login" sequence="seq_cif_one_auth_platform_lg">
+	<operation name="insert">
+		<sql>insert into cif_one_auth_platform_login
+			(id,one_auth_id,logged_platform_type,gmt_success,logged_login_ip,
+			logged_login_session_id,logged_login_key,logged_sign_key,logged_crypt_key,
+			logged_crypt_key_type,platform_login_seq,logged,gmt_create,gmt_modified,
+			logged_device_type,logged_device_info)
+			values
+			(?,?,?,?,?,?,?,?,?,?,?,?,@db@.sysdate,@db@.sysdate,?,?)
+		</sql>
+	</operation>
+	<operation name="selectById">
+		<sql>
+			select
+			id,one_auth_id,logged_platform_type,gmt_success,logged_login_ip,
+			logged_login_session_id,logged_login_key,logged_sign_key,logged_crypt_key,
+			logged_crypt_key_type,platform_login_seq,logged,gmt_create,
+			gmt_modified,logged_device_type,logged_device_info
+			from
+			cif_one_auth_platform_login where id=?
+		</sql>
+	</operation>
+	<operation name="selectByLoggedLoginKey">
+		<sql>
+			select
+			id,one_auth_id,logged_platform_type,gmt_success,logged_login_ip,
+			logged_login_session_id,logged_login_key,logged_sign_key,logged_crypt_key,
+			logged_crypt_key_type,platform_login_seq,logged,gmt_create,
+			gmt_modified,logged_device_type,logged_device_info
+			from
+			cif_one_auth_platform_login where logged_login_key=?
+		</sql>
+	</operation>
+	<operation name="selectMaxPlatformLoginSeqByOneAuthIdAndPlatformType">
+		<sql>
+			select max(platform_login_seq) from
+			cif_one_auth_platform_login
+			where
+			one_auth_id=? and logged_platform_type=?
+		</sql>
+	</operation>
+	<operation name="selectEarliestLogoutIdByOneAuthIdPlatformTypeAndMaxPlatformLoginSeq" limitAmountValue="1">
+		<sql>
+			select id from cif_one_auth_platform_login where one_auth_id=?
+			and logged_platform_type=? and logged=0 and platform_login_seq &lt;=
+			? order by gmt_success asc
+		</sql>
+	</operation>
+	<operation name="selectEarliestLoggedIdByOneAuthIdPlatformTypeAndMaxPlatformLoginSeq" limitAmountValue="1">
+		<sql>
+			select id from cif_one_auth_platform_login where one_auth_id=?
+			and logged_platform_type=? and platform_login_seq &lt;= ? order by
+			gmt_success asc
+		</sql>
+	</operation>
+	<operation name="updateLoginSuccess">
+		<sql>
+			update cif_one_auth_platform_login set
+			gmt_success=@db@.sysdate,gmt_modified=@db@.sysdate,logged_login_ip=?,logged_login_session_id=?,
+			logged_login_key=?,logged_sign_key=?,logged_crypt_key=?,
+			logged_crypt_key_type=?,logged=1,logged_device_type=?,logged_device_info=?
+			where id=?
+		</sql>
+	</operation>
+	<operation name="updateLogoutByLoginKey">
+		<sql>
+			update cif_one_auth_platform_login set
+			logged=0,gmt_modified=@db@.sysdate where id=?
+		</sql>
+	</operation>
+	<operation name="updateLogoutByLoggedLoginSessionId">
+		<sql>
+			update cif_one_auth_platform_login set
+			logged=0,gmt_modified=@db@.sysdate where logged_login_session_id=?
+		</sql>
+	</operation>
+	<operation name="updateLogoutByOneAuthId">
+		<sql>
+			update cif_one_auth_platform_login set
+			logged=0,gmt_modified=@db@.sysdate where one_auth_id=? and logged=1
+		</sql>
+	</operation>
+	
+</table>

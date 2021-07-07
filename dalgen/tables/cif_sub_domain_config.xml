@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_sub_domain_config">
+	<operation name="insert">
+		<sql>insert into cif_sub_domain_config
+			(sub_name,sub_message,parent_domain_name,enabled,default_sub_domain,gmt_create,gmt_modified)
+			values
+			(?,?,?,?,?,@db@.sysdate,@db@.sysdate)
+		</sql>
+	</operation>
+	<operation name="updateBySubName" paramtype="object">
+		<sql>
+			update cif_sub_domain_config
+			set sub_message =
+			?,parent_domain_name=?,enabled=?, default_sub_domain=
+			?,gmt_modified =
+			@db@.sysdate
+			where sub_name = ?
+		</sql>
+	</operation>
+	<operation name="selectBySubName">
+		<sql>
+			select
+			sub_name,sub_message,parent_domain_name,enabled,default_sub_domain,gmt_create,gmt_modified
+			from
+			cif_sub_domain_config
+			where sub_name = ?
+		</sql>
+	</operation>
+	<operation name="selectAll" multiplicity="many">
+		<sql>
+			select
+			sub_name,sub_message,parent_domain_name,enabled,default_sub_domain,gmt_create,gmt_modified
+			from
+			cif_sub_domain_config
+		</sql>
+	</operation>
+	<operation name="selectByMaxGmtModified" multiplicity="many">
+		<sql>
+			select
+			sub_name,sub_message,parent_domain_name,enabled,default_sub_domain,gmt_create,gmt_modified
+			from
+			cif_sub_domain_config where gmt_modified &gt; ?
+		</sql>
+	</operation>
+
+	<operation name="selectDefaultDomainIfEmpty">
+		<sql>
+			select
+			sub_name,sub_message,parent_domain_name,enabled,default_sub_domain,gmt_create,gmt_modified
+			from
+			cif_sub_domain_config
+			where sub_name like ?
+		</sql>
+	</operation>
+
+
+</table>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_validated_cell" sequence="seq_cif_user_validated_cell">
+	<operation name="insert">
+		<sql> insert into cif_user_validated_cell
+			(id, user_id, cell,
+			gmt_create, gmt_modified)
+			values
+			(?, ?, ?, @db@.sysdate, @db@.sysdate)
+		</sql>
+	</operation>
+	<operation name="selectByUserId" multiplicity="many">
+		<sql>
+			select id, user_id, cell,
+			gmt_create, gmt_modified from
+			cif_user_validated_cell
+			where user_id=?
+		</sql>
+	</operation>
+	<operation name="selectFirstValidatedCell" limitAmountValue="1">
+		<sql>
+			select cell from cif_user_validated_cell where user_id=? order by
+			gmt_create asc
+		</sql>
+	</operation>
+	<operation name="selectCountByUserId">
+		<sql>
+			select count(*) from
+			cif_user_validated_cell
+			where user_id=?
+		</sql>
+	</operation>
+
+
+	<!-- 查询复用参数 -->
+	<extraparams name="searchParameters">
+		<param name="userId" javatype="java.lang.String"/>
+		<param name="cell" javatype="java.lang.String"/>
+		<param name="minGmtCreate" javatype="java.util.Date"/>
+		<param name="maxGmtCreate" javatype="java.util.Date"/>
+		<param name="minGmtModified" javatype="java.util.Date"/>
+		<param name="maxGmtModified" javatype="java.util.Date"/>
+	</extraparams>
+
+	<!-- 查询复用条件sql -->
+	<sql name="searchWhereSql">
+		<![CDATA[ 
+			 <where>
+						  	<if test="userId != null and userId != ''"> 
+							     and user_id=#userId#
+                            </if>
+                             <if test="cell != null and cell != ''"> 
+							     and cell=#cell#
+                            </if>
+                            <if test="minGmtCreate != null">                              
+							     and gmt_create &gt;= #minGmtCreate#
+                            </if>
+                            <if test="maxGmtCreate != null">                              
+							     and gmt_create &lt;= #maxGmtCreate#
+                            </if>
+                            <if test="minGmtModified != null">                              
+							     and gmt_modified &gt;= #minGmtModified#
+                            </if>
+                             <if test="maxGmtModified != null">                              
+							     and gmt_modified &lt;= #maxGmtModified#
+                            </if>
+                     </where>
+		]]>
+	</sql>
+	<operation name="search" multiplicity="many" paging="true">
+		<extraparams>
+			<param ref="searchParameters"/>
+		</extraparams>
+		<sql>
+			select id, cell, user_id, gmt_create, gmt_modified
+			from
+			cif_user_validated_cell
+			where 1=0
+		</sql>
+		<sqlmap>
+				<![CDATA[ 
+            select id, cell, user_id, gmt_create, gmt_modified
+			from cif_user_validated_cell
+				<include refid="searchWhereSql"/>
+				order by id desc
+    			]]>
+		</sqlmap>
+	</operation>
+</table>

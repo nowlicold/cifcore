@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuan.cifcore.repository.mapper.CanceledOneAuthMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        one_auth_id, auth_name, auth_name_type, gmt_create, gmt_modified, cell, cell_validate, domain, sub_domain, default_user_id, login_password, can_login, account_password, real_name, email, qq, cert_type, cert_no, email_validate, qq_validate, gmt_change_identity, sex, birthday
+    </sql>
+
+</mapper>

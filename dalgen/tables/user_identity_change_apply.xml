@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd">
+<table sqlname="user_identity_change_apply" sequence="seq_user_identity_change_apply">
+	<select type="byPk"/>
+	<select type="byPkForUpdate"/>
+	<operation name="insert">
+		<sql>
+			insert into user_identity_change_apply
+			(id, change_cert_no,
+			change_real_name, creater_id, gmt_create,
+			auditer_id, status,
+			audit_memo, gmt_audit, create_memo, gmt_modified,
+			user_id,
+			change_cert_type, creater_platform_code,
+			auditer_platform_code)
+			values
+			(?, ?, ?, ?, @db@.sysdate, ?, ?, ?, ?, ?, @db@.sysdate, ?, ?, ?, ?)
+		</sql>
+	</operation>
+
+	<operation name="selectwaitAuditIdByUserId">
+		<sql>
+			select id from user_identity_change_apply where
+			status='WAIT_AUDIT' and user_id=?
+		</sql>
+	</operation>
+
+	<operation name="selectwaitAuditApplyByUserId">
+		<sql>
+			${SELECT_TABLE} where status='WAIT_AUDIT' and user_id=?
+		</sql>
+	</operation>
+
+	<operation name="updateAuditById">
+		<sql>
+			update user_identity_change_apply set auditer_id=? , audit_memo=?
+			, gmt_audit=@db@.sysdate
+			,gmt_modified=@db@.sysdate,auditer_platform_code=?,status=? where
+			id=?
+		</sql>
+	</operation>
+
+	<operation name="search" multiplicity="many" paging="true">
+		<extraparams>
+			<param name="userId" javatype="java.lang.String"/>
+			<param name="changeCertNo" javatype="java.lang.String"/>
+			<param name="changeRealName" javatype="java.lang.String"/>
+			<param name="changeCertType" javatype="java.lang.String"/>
+			<param name="status" javatype="java.lang.String"/>
+			<param name="createrId" javatype="java.lang.String"/>
+			<param name="createrPlatformCode" javatype="java.lang.String"/>
+			<param name="auditerId" javatype="java.lang.String"/>
+			<param name="auditerPlatformCode" javatype="java.lang.String"/>
+			<param name="beginCreateDate" javatype="java.util.Date"/>
+			<param name="endCreateDate" javatype="java.util.Date"/>
+			<param name="beginAuditDate" javatype="java.util.Date"/>
+			<param name="endAuditDate" javatype="java.util.Date"/>
+		</extraparams>
+		<sql>
+			select id, change_cert_no, change_real_name, creater_id,
+			gmt_create,
+			auditer_id, status, audit_memo, gmt_audit, create_memo,
+			gmt_modified,
+			user_id, change_cert_type, creater_platform_code,
+			auditer_platform_code from user_identity_change_apply where 1=0
+		</sql>
+		<sqlmap>
+            <![CDATA[
+                select id, change_cert_no, change_real_name, creater_id, gmt_create,
+			auditer_id, status, audit_memo, gmt_audit, create_memo, gmt_modified,
+			user_id, change_cert_type, creater_platform_code,
+			auditer_platform_code from user_identity_change_apply
+                <where>
+           	 	    <if test="userId != null and userId != ''">
+		 			    and user_id = #userId#
+				    </if>
+                    <if test="status != null and status != ''">
+                        and status = #status#
+				    </if>
+                    <if test="changeCertNo != null and changeCertNo != ''">
+                        and change_cert_no = #changeCertNo#
+				    </if>
+                    <if test="changeRealName != null and changeRealName != ''">
+                        and change_real_name like '%'||#changeRealName#||'%'
+				    </if>
+                    <if test="changeCertType != null and changeCertType != ''">
+                        and change_cert_type = #changeCertType#
+				    </if>					    				    				    
+				    <if test="createrId != null and createrId != ''">
+                        and creater_id = #createrId#
+				    </if>
+				    <if test="createrPlatformCode != null and createrPlatformCode != ''">
+                        and creater_platform_code = #createrPlatformCode#
+				    </if>
+				    <if test="auditerId != null and auditerId != ''">
+                        and auditer_id = #auditerId#
+				    </if>
+				    <if test="status != null and status != ''">
+                        and status = #status#
+				    </if>
+				    <if test="beginCreateDate != null">
+				    	and gmt_create &gt;=#beginCreateDate#
+				    </if>
+				    <if test="endCreateDate != null">
+				    	and gmt_create &lt;=#endCreateDate#
+				    </if>
+				    <if test="beginAuditDate != null">
+				    	and gmt_audit &gt;=#beginAuditDate#
+				    </if>
+				    <if test="endAuditDate != null">
+				    	and gmt_audit &lt;=#endAuditDate#
+				    </if>
+             </where>
+             order by gmt_create desc
+            ]]>
+		</sqlmap>
+	</operation>
+</table>

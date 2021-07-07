@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd">
+<table sqlname="cif_user_logo">
+    <operation name="insert">
+        <sql>
+            insert into cif_user_logo
+            (user_id,gmt_modified,
+            gmt_create, file_type,system_logo_id ,image_resource_id)
+            values
+            (?,
+            @db@.sysdate,
+            @db@.sysdate,
+            ?,? ,?)
+        </sql>
+    </operation>
+    <operation name="selectByUserId">
+        <sql>
+            select user_id, gmt_modified, gmt_create,
+            file_type,system_logo_id ,image_resource_id from
+            cif_user_logo where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="selectGmtModifiedByUserId">
+        <sql>
+            select gmt_modified from
+            cif_user_logo where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="selectFileTypeByUserId">
+        <sql>
+            select file_type from
+            cif_user_logo where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="selectByUserIdForUpdate">
+        <sql>
+            select user_id, gmt_modified, gmt_create,
+            file_type,system_logo_id ,image_resource_id from
+            cif_user_logo where
+            user_id=? for update
+            nowait
+        </sql>
+    </operation>
+    <operation name="selectExistsByUserId">
+        <sql>
+            select count(*) from
+            cif_user_logo where user_id=?
+        </sql>
+    </operation>
+    <operation name="selectGmtModifiedById">
+        <sql>
+            select gmt_modified from
+            cif_user_logo where user_id=?
+        </sql>
+    </operation>
+    <operation name="deleteByUserId">
+        <sql>
+            delete from
+            cif_user_logo where user_id=?
+        </sql>
+    </operation>
+
+    <operation name="updateByUserId">
+        <sql>
+            update cif_user_logo
+            set gmt_modified=@db@.sysdate,
+            file_type=?,system_logo_id=? ,image_resource_id=? where user_id=?
+        </sql>
+    </operation>
+    <operation name="selectSystemLogoIdByUserId">
+        <sql>
+            select system_logo_id
+            from
+            cif_user_logo where user_id=?
+        </sql>
+    </operation>
+
+    <operation name="selectByUserIds" multiplicity="many">
+        <extraparams>
+            <param name="userIds" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            select user_id, gmt_modified, gmt_create,
+            file_type,system_logo_id,image_resource_id
+            from cif_user_logo where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+				${cdata-start}
+				select user_id, gmt_modified, gmt_create, file_type,system_logo_id ,image_resource_id
+				from cif_user_logo
+				${cdata-end}
+				<where>
+					<foreach open="user_id in (" close=")" separator="," collection="userIds" item="item">
+						#userIds[]#
+					</foreach>                          
+                </where>  
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="updateGmtModifiedByUserId">
+        <sql>
+            update cif_user_logo set
+            gmt_modified=@db@.sysdate
+            where user_id=?
+        </sql>
+    </operation>
+
+    <operation name="updateGmtModifiedByUserIds">
+        <extraparams>
+            <param name="userIds" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            update cif_user_logo set
+            gmt_modified=@db@.sysdate
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+                update cif_user_logo set
+                gmt_modified=@db@.sysdate
+                <where>
+					<foreach open="user_id in (" close=")" separator="," collection="userIds" item="item">
+						#userIds[]#
+					</foreach>
+                </where>
+            ]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="search" multiplicity="many" paging="true">
+        <extraparams>
+            <param name="systemLogoId" javatype="long"/>
+            <param name="userId" javatype="java.lang.String"/>
+            <param name="minGmtCreate" javatype="java.util.Date"/>
+            <param name="maxGmtCreate" javatype="java.util.Date"/>
+            <param name="minGmtModified" javatype="java.util.Date"/>
+            <param name="maxGmtModified" javatype="java.util.Date"/>
+            <param name="imageResourceId" javatype="java.lang.String"/>
+            <param name="orderBy" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select user_id, gmt_modified, gmt_create,
+            file_type,system_logo_id ,image_resource_id from
+            cif_user_logo where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+            	select user_id, gmt_modified, gmt_create,
+            	file_type,system_logo_id ,image_resource_id from
+            	cif_user_logo
+            	<where>
+            		<if test="systemLogoId == 0">
+			            and system_logo_id = #systemLogoId#
+                	</if>
+					<if test="userId != null and userId != ''">
+						and user_id = #userId#
+                 	</if>
+					<if test="imageResourceId != null and imageResourceId != ''">
+						and image_resource_id = #imageResourceId#
+                 	</if>
+                    <if test="minGmtCreate != null">
+						and gmt_create &gt;=  #minGmtCreate#
+                    </if>
+                    <if test="maxGmtCreate != null">
+						and gmt_create &lt;= #maxGmtCreate#
+                    </if>
+                    <if test="minGmtModified != null">
+						and gmt_modified &gt;=  #minGmtModified#
+                    </if>
+                    <if test="maxGmtModified != null">
+						and gmt_modified &lt;= #maxGmtModified#
+                    </if>
+            	</where>
+            	
+			]]>
+        <if test="orderBy != null and orderBy != ''">
+		     			${cdata-start}
+							order by $orderBy$
+		                ${cdata-end}
+	                </if></sqlmap>
+    </operation>
+</table>

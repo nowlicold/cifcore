@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_forbidden_action_type" sequence="seq_cif_forbidden_action_type">
+	<operation name="insert">
+		<sql>
+			insert into cif_forbidden_action_type
+			(id, message,
+			name, enabled,
+			gmt_create, gmt_modified)
+			values
+			(?, ?, ?, ?,
+			@db@.sysdate,@db@.sysdate)
+		</sql>
+	</operation>
+	
+	<operation name="selectAll" multiplicity="many">
+		<sql>
+			select id, message, name, enabled, gmt_create,
+			gmt_modified from
+			cif_forbidden_action_type
+		</sql>
+	</operation>
+	
+	<operation name="selectByMaxGmtModified" multiplicity="many">
+		<sql>
+			select id, message, name, enabled, gmt_create,
+			gmt_modified from
+			cif_forbidden_action_type where gmt_modified &gt; ?
+		</sql>
+	</operation>
+	
+	<operation name="selectByIdForUpdate">
+		<sql>
+			select id, message, name, enabled, gmt_create,
+			gmt_modified from
+			cif_forbidden_action_type where id= ? for update
+			nowait
+		</sql>
+	</operation>
+	
+	<operation name="updateEnabledById">
+		<sql>
+			update cif_forbidden_action_type
+			set enabled=?,gmt_modified=sysdate
+			where id=?
+		</sql>
+	</operation>
+</table>

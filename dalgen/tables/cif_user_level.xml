@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_level" sequence="seq_cif_user_level">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_level
+			(id, user_id, level_name, level_value,
+			gmt_modified, gmt_create,
+			modifier, creater)
+			values
+			(?, ?, ?, ?,
+			@db@.sysdate,
+			@db@.sysdate, ?, ?)
+
+		</sql>
+	</operation>
+	<operation name="selectById">
+		<sql>
+			select id, user_id, level_name, level_value,
+			gmt_modified,
+			gmt_create,
+			modifier, creater from cif_user_level where id=?
+		</sql>
+	</operation>
+	<operation name="search" multiplicity="many" paging="true">
+		<extraparams>
+			<param name="loginName" javatype="java.lang.String"/>
+			<param name="userId" javatype="java.lang.String"/>
+			<param name="levelName" javatype="java.lang.String"/>
+			<param name="levelValue" javatype="java.lang.String"/>
+			<param name="beginCreateDate" javatype="java.util.Date"/>
+			<param name="endCreateDate" javatype="java.util.Date"/>
+		</extraparams>
+		<sql>
+			select id, user_id, level_name, level_value, gmt_modified,
+			gmt_create, modifier, creater from cif_user_level where 1=0
+		</sql>
+		<sqlmap>
+		<![CDATA[
+			${cdata-start}
+				select id, user_id, level_name, level_value, gmt_modified,
+				gmt_create, modifier, creater from cif_user_level
+			${cdata-end}
+			<where>
+				<if test="userId != null and userId != ''">
+	     			 ${cdata-start}
+							and user_id=#userId#
+	                 ${cdata-end}
+                </if>
+                <if test="levelName != null and levelName != ''">
+	     			 ${cdata-start}
+							and level_name=#levelName#
+	                 ${cdata-end}
+                </if>
+                <if test="levelValue != null and levelValue != ''">
+	     			 ${cdata-start}
+							and level_value=#levelValue#
+	                 ${cdata-end}
+                </if>
+                <if test="loginName != null and loginName != ''">
+	     			 ${cdata-start}
+							and user_id=(select user_id from cif_user t where t.login_name=#loginName#)
+	                 ${cdata-end}
+                </if>
+                <if test="beginCreateDate != null">
+	     			  ${cdata-start}
+							and gmt_create >= #beginCreateDate#
+	                  ${cdata-end}
+                </if>
+                <if test="endCreateDate != null">
+	     			  ${cdata-start}
+							and gmt_create <= #endCreateDate#
+	                  ${cdata-end}
+                </if>
+			</where>
+			${cdata-start}
+			 order by gmt_create desc
+			${cdata-end}
+		]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectByUserIdAndLevelName">
+		<sql>
+			select id, user_id, level_name, level_value,
+			gmt_modified,
+			gmt_create,
+			modifier, creater from cif_user_level where user_id=? and
+			level_name=?
+		</sql>
+	</operation>
+	<operation name="selectLevelValueByUserIdAndLevelName">
+		<sql>
+			select level_value from cif_user_level where user_id=? and
+			level_name=?
+		</sql>
+	</operation>
+	<operation name="updateLevelValueByUserIdAndLevelName">
+		<sql>
+			update cif_user_level set
+			level_value=?,gmt_modified=@db@.sysdate,modifier=?
+			where user_id=? and
+			level_name=?
+		</sql>
+	</operation>
+</table>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_geographic">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_geographic
+			(user_id, longitude, latitude,
+			gmt_create, gmt_modified)
+			values(?, ?, ?, sysdate, sysdate)
+		</sql>
+	</operation>
+
+	<operation name="updateByUserId">
+		<sql>
+			update cif_user_geographic
+			set longitude = ?,
+			latitude = ?,
+			gmt_modified = sysdate
+			where user_id = ?
+		</sql>
+	</operation>
+
+	<operation name="deleteByUserId">
+		<sql>
+			delete from cif_user_geographic where user_id = ?
+		</sql>
+	</operation>
+
+	<operation name="selectByUserIdForUpdate">
+		<sql>
+			select user_id, longitude, latitude, gmt_create, gmt_modified
+			from cif_user_geographic
+			where user_id = ? for update
+		</sql>
+	</operation>
+
+	<operation name="selectByUserId">
+		<sql>
+			select user_id, longitude, latitude, gmt_create, gmt_modified
+			from cif_user_geographic
+			where user_id = ?
+		</sql>
+	</operation>
+
+	<operation name="selectByUserIds" multiplicity="many">
+		<extraparams>
+			<param name="userIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select user_id, longitude, latitude, gmt_create, gmt_modified
+			from cif_user_geographic
+			where 0=1
+		</sql>
+		<sqlmap>
+		<![CDATA[
+			select user_id, longitude, latitude, gmt_create, gmt_modified
+            from cif_user_geographic where
+			<foreach open="user_id in (" close=")" separator="," collection="userIds" item="item">
+				${cdata-start}
+					#userIds[]#
+				${cdata-end}
+			</foreach>
+		]]>
+		</sqlmap>
+	</operation>
+
+</table>

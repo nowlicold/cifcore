@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_type">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_type
+			(name,message,enabled,gmt_create,gmt_modified,properties,fund_account_types,present_account_types,point_account_types,allow_login)
+			values(?,?,?,@db@.sysdate,@db@.sysdate,?,?,?,?,?);
+
+		</sql>
+	</operation>
+	<operation name="selectAll" multiplicity="many">
+		<sql>
+			select
+			name,message,enabled,gmt_create,gmt_modified,properties,fund_account_types,present_account_types,point_account_types,allow_login
+			from
+			cif_user_type
+		</sql>
+	</operation>
+	<operation name="selectByMaxGmtModified" multiplicity="many">
+		<sql>
+			select
+			name,message,enabled,gmt_create,gmt_modified,properties,fund_account_types,present_account_types,point_account_types,allow_login
+			from
+			cif_user_type where gmt_modified &gt; ?
+		</sql>
+	</operation>
+</table>

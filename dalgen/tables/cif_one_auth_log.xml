@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_one_auth_log" sequence="SEQ_cif_one_auth_log">
+	<operation name="insert">
+		<sql>
+			insert into cif_one_auth_log
+			(id, one_auth_id, action, content,
+			gmt_create, creator)
+			values
+			(?, ?, ?, ?, @db@.sysdate, ?)
+		</sql>
+	</operation>
+</table>

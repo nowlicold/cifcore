@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="CIF_THIRD_ONE_AUTH_MAPPING">
+	<operation name="insert">
+		<sql>
+			insert into CIF_THIRD_ONE_AUTH_MAPPING
+			(id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain)
+			values
+			(?,?,?,?,?,?,@db@.sysdate,@db@.sysdate,?,?)
+		</sql>
+	</operation>
+	<operation name="selectByOneAuthId" multiplicity="many">
+		<sql>
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain
+			from
+			CIF_THIRD_ONE_AUTH_MAPPING
+			where one_auth_id=?
+		</sql>
+	</operation>
+	<operation name="selectByThirdChannelAndOneAuthId" multiplicity="many">
+		<sql>
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain
+			from
+			CIF_THIRD_ONE_AUTH_MAPPING
+			where third_channel=? and one_auth_id=?
+		</sql>
+	</operation>
+	<operation name="selectByThirdChannelsAndOneAuthId" multiplicity="many">
+		<extraparams>
+			<param name="thirdChannels" javatype="java.util.List"/>
+			<param name="oneAuthId" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain
+			from CIF_THIRD_ONE_AUTH_MAPPING where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain
+			from CIF_THIRD_ONE_AUTH_MAPPING
+			where one_auth_id=#oneAuthId# and third_channel in
+			<foreach open="(" close=")" separator="," collection="thirdChannels" item="item">
+				#thirdChannels[]#
+			</foreach>	
+			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="selectThirdOneAuthIdsByThirdChannelAndOneAuthId" multiplicity="many">
+		<sql>
+			select third_one_auth_id from
+			CIF_THIRD_ONE_AUTH_MAPPING where
+			third_channel=? and one_auth_id=?
+		</sql>
+	</operation>
+
+	<operation name="selectByThirdChannelThirdOneAuthIdAndDomainAndOneAuthId">
+		<sql>
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain
+			from
+			CIF_THIRD_ONE_AUTH_MAPPING
+			where third_channel=? and third_one_auth_id=? and
+			domain=? and one_auth_id=?
+		</sql>
+	</operation>
+
+	<operation name="selectOneAuthIdByThirdChannelThirdOneAuthIdAndDomain" multiplicity="many">
+		<sql>
+			select one_auth_id from
+			CIF_THIRD_ONE_AUTH_MAPPING where third_channel=?
+			and third_one_auth_id=? and domain=?
+		</sql>
+	</operation>
+
+	<operation name="selectByThirdChannelThirdOneAuthIdsAndDomain" multiplicity="many">
+		<extraparams>
+			<param name="thirdChannel" javatype="java.lang.String"/>
+			<param name="thirdOneAuthIds" javatype="java.util.List"/>
+			<param name="domain" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain
+			from
+			CIF_THIRD_ONE_AUTH_MAPPING
+			where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain
+			from
+			CIF_THIRD_ONE_AUTH_MAPPING where domain=#domain# and third_channel=#thirdChannel#  and third_one_auth_id in
+			<foreach open="(" close=")" separator="," collection="thirdOneAuthIds" item="item">
+				#thirdOneAuthIds[]#
+			</foreach>	
+			]]>
+
+		</sqlmap>
+	</operation>
+	<operation name="selectOneAuthIdsByThirdChannelThirdOneAuthIdsAndDomain" multiplicity="many">
+		<extraparams>
+			<param name="thirdChannel" javatype="java.lang.String"/>
+			<param name="thirdOneAuthIds" javatype="java.util.List"/>
+			<param name="domain" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select one_auth_id from
+			CIF_THIRD_ONE_AUTH_MAPPING where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select  one_auth_id from
+			CIF_THIRD_ONE_AUTH_MAPPING where domain=#domain# and third_channel=#thirdChannel# and third_one_auth_id in
+			<foreach open="(" close=")" separator="," collection="thirdOneAuthIds" item="item">
+				#thirdOneAuthIds[]#
+			</foreach>	
+			]]>
+
+
+		</sqlmap>
+	</operation>
+	<operation name="selectThirdOneAuthIdWithOneAuthIdByThirdChannelThirdOneAuthIdsAndDomain" multiplicity="many" resultClass="java.util.HashMap">
+		<extraparams>
+			<param name="thirdChannel" javatype="java.lang.String"/>
+			<param name="thirdOneAuthIds" javatype="java.util.List"/>
+			<param name="domain" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select third_one_auth_id, one_auth_id from
+			CIF_THIRD_ONE_AUTH_MAPPING where
+			1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select  third_one_auth_id, one_auth_id from
+			CIF_THIRD_ONE_AUTH_MAPPING where domain=#domain# and third_channel=#thirdChannel# and third_one_auth_id  in
+			<foreach open="(" close=")" separator="," collection="thirdOneAuthIds" item="item">
+				#thirdOneAuthIds[]#
+			</foreach>
+			]]>
+
+		</sqlmap>
+	</operation>
+	<operation name="selectCountByThirdChannelThirdOneAuthIdAndDomainAndOneAuthId">
+		<sql>
+			select count(*) from
+			CIF_THIRD_ONE_AUTH_MAPPING where third_channel=?
+			and third_one_auth_id=? and domain=? and one_auth_id=?
+		</sql>
+	</operation>
+	<operation name="selectCountByOneAuthId">
+		<sql>
+			select count(*) from
+			CIF_THIRD_ONE_AUTH_MAPPING where one_auth_id=?
+		</sql>
+	</operation>
+
+
+	<operation name="selectByOneAuthIds" multiplicity="many">
+		<extraparams>
+			<param name="oneAuthIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain
+			from
+			CIF_THIRD_ONE_AUTH_MAPPING
+			where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain
+			from
+			CIF_THIRD_ONE_AUTH_MAPPING where one_auth_id in
+			<foreach open="(" close=")" separator="," collection="oneAuthIds" item="item">
+				#oneAuthIds[]#
+			</foreach>	
+			]]>
+		</sqlmap>
+	</operation>
+	
+	<operation name="selectByThirdChannelAndOneAuthIds" multiplicity="many">
+		<extraparams>
+			<param name="thirdChannel" javatype="java.lang.String"/>
+			<param name="oneAuthIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain
+			from
+			CIF_THIRD_ONE_AUTH_MAPPING where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain
+			from
+			CIF_THIRD_ONE_AUTH_MAPPING where third_channel=#thirdChannel# and one_auth_id in
+			<foreach open="(" close=")" separator="," collection="oneAuthIds" item="item">
+				#oneAuthIds[]#
+			</foreach>	
+			]]>
+		</sqlmap>
+	</operation>
+
+	
+	<operation name="selectByThirdChannelThirdOneAuthIdAndDomainAndOneAuthIdForUpdate">
+		<sql>
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain
+			from
+			CIF_THIRD_ONE_AUTH_MAPPING where third_channel=?
+			and third_one_auth_id=? and
+			domain=? and one_auth_id=? for update nowait
+		</sql>
+	</operation>
+
+	<operation name="deleteById">
+		<sql>
+			delete from
+			CIF_THIRD_ONE_AUTH_MAPPING where id = ?
+		</sql>
+	</operation>
+
+	<operation name="selectById">
+		<sql>
+			select id, third_one_auth_id,
+			third_channel, third_one_auth_name, 
+			properties, unique_id,
+			gmt_create, gmt_modified, one_auth_id, domain from
+			CIF_THIRD_ONE_AUTH_MAPPING
+			where id=?
+		</sql>
+	</operation>
+</table>

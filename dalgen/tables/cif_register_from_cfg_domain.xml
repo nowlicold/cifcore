@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_register_from_cfg_domain" sequence="seq_cif_register_from_cfg_dom">
+	<operation name="insert">
+		<sql>insert into cif_register_from_cfg_domain
+			(id,
+			register_from_config_id, domain_name, enabled, gmt_create,
+			gmt_modified)
+			values
+			(?, ?, ?,
+			?, @db@.sysdate,@db@.sysdate)
+		</sql>
+	</operation>
+	<operation name="selectById">
+		<sql>
+			select id,
+			register_from_config_id, domain_name, enabled,
+			gmt_create,
+			gmt_modified
+			from
+			cif_register_from_cfg_domain
+			where
+			id=?
+		</sql>
+	</operation>
+	<operation name="selectByDomainNames" multiplicity="many">
+		<extraparams>
+			<param name="domainNames" javatype="java.util.List"/>
+			<param name="enabled" javatype="java.lang.Boolean"/>
+		</extraparams>
+		<sql>
+			select id,
+			register_from_config_id, domain_name, enabled,
+			gmt_create,
+			gmt_modified
+			from
+			cif_register_from_cfg_domain where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[			
+			select id,
+			register_from_config_id, domain_name, enabled,
+			gmt_create,
+			gmt_modified
+			from
+			cif_register_from_cfg_domain where
+			domain_name in
+			<foreach open="(" close=")" separator="," collection="domainNames" item="item"> 
+					#domainNames[]# 
+			</foreach>
+			<if test="enabled != null">
+				and enabled=#enabled#
+			</if>
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectByRegisterFromConfigId">
+		<sql>
+			select id,
+			register_from_config_id, domain_name, enabled,
+			gmt_create,
+			gmt_modified
+			from
+			cif_register_from_cfg_domain where
+			register_from_config_id=?
+		</sql>
+	</operation>
+</table>

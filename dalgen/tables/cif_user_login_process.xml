@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_login_process">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_login_process
+			(user_id,gmt_success,logged_platform_type,logged_login_ip,logged_login_name,
+			gmt_fail,gmt_create,gmt_modified,logged_device_type,logged_device_info,retry_password_count)
+			values
+			(?,?,?,?,?,?,@db@.sysdate,@db@.sysdate,?,?,?)
+		</sql>
+	</operation>
+	<operation name="selectByUserId">
+		<sql>
+			select
+			user_id,gmt_success,logged_platform_type,logged_login_ip,logged_login_name,
+			gmt_fail,gmt_create,gmt_modified,logged_device_type,logged_device_info,retry_password_count
+			from
+			cif_user_login_process where user_id=?
+		</sql>
+	</operation>
+	<!--登录成功后，更新信息 -->
+	<operation name="updateLoginSuccess">
+		<sql>
+			update cif_user_login_process set
+			gmt_modified=@db@.sysdate,gmt_success=@db@.sysdate,logged_login_name=?,logged_platform_type=?,logged_login_ip=?,
+			logged_device_type=?,logged_device_info=?,retry_password_count=0
+			where user_id=?
+		</sql>
+	</operation>
+	<operation name="updateLoginFail">
+		<sql>
+			update cif_user_login_process set
+			gmt_modified=@db@.sysdate,gmt_fail=@db@.sysdate,retry_password_count=retry_password_count+1 where user_id=?
+		</sql>
+	</operation>
+	<operation name="selectByUserIds" multiplicity="many">
+		<extraparams>
+			<param name="ids" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select
+			user_id,gmt_success,logged_platform_type,logged_login_ip,logged_login_name,
+			gmt_fail,gmt_create,gmt_modified,logged_device_type,logged_device_info,retry_password_count
+			from
+			cif_user_login_process where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select
+			user_id,gmt_success,logged_platform_type,logged_login_ip,logged_login_name,
+			gmt_fail,gmt_create,gmt_modified,logged_device_type,logged_device_info,retry_password_count
+			from
+			cif_user_login_process where user_id in 
+			<foreach open="(" close=")" separator="," collection="ids" item="item">
+					#ids[]#
+			</foreach>
+			order by gmt_success desc
+			]]>
+		</sqlmap>
+	</operation>
+</table>

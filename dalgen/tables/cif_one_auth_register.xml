@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_one_auth_register">
+	<operation name="insert">
+		<sql>
+			insert into cif_one_auth_register
+			(one_auth_id,from_user_id,from_type_code,register_ip,device_type,device_info,platform_type,gmt_create,gmt_modified)
+			values
+			(?,?,?,?,?,?,?,@db@.sysdate,@db@.sysdate)
+		</sql>
+	</operation>
+
+	<operation name="selectByOneAuthId">
+		<sql>
+			select
+			one_auth_id,from_user_id,from_type_code,register_ip,device_type,device_info,platform_type,gmt_create,gmt_modified
+			from cif_one_auth_register where one_auth_id=?
+		</sql>
+	</operation>
+
+</table>

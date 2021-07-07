@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_one_auth_login_process">
+	<operation name="insert">
+		<sql> insert into cif_one_auth_login_process
+			(one_auth_id,gmt_success,gmt_fail,logged_platform_type,logged_login_ip,gmt_create,
+			gmt_modified,logged_device_type,logged_device_info,retry_password_count)
+			values
+			(?,?,?,?,?,@db@.sysdate,@db@.sysdate,?,?,?)
+		</sql>
+	</operation>
+	<operation name="selectByOneAuthId">
+		<sql>
+			select
+			one_auth_id,gmt_success,gmt_fail,logged_platform_type,logged_login_ip,gmt_create,
+			gmt_modified,logged_device_type,logged_device_info,retry_password_count
+			from
+			cif_one_auth_login_process where
+			one_auth_id=?
+		</sql>
+	</operation>
+	<operation name="updateLoginSuccess">
+		<sql>
+			update cif_one_auth_login_process set
+			gmt_success=@db@.sysdate,gmt_modified=@db@.sysdate,logged_login_ip=?,logged_platform_type=?,
+			logged_device_type=?,logged_device_info=?,retry_password_count=0
+			where
+			one_auth_id=?
+		</sql>
+	</operation>
+
+	<!--验证登录密码失败后，更新信息 -->
+	<operation name="updateLoginFailed">
+		<sql>
+			update cif_one_auth_login_process set
+			gmt_modified=@db@.sysdate,gmt_fail=@db@.sysdate,retry_password_count=retry_password_count+1
+			where
+			one_auth_id=?
+		</sql>
+	</operation>
+	
+	<operation name="updateRetryCountReset">
+		<sql>
+			update cif_one_auth_login_process set
+			gmt_modified=@db@.sysdate,retry_password_count=0
+			where
+			one_auth_id=?
+		</sql>
+	</operation>
+</table>

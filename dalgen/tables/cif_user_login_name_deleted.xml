@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_login_name_deleted">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_login_name_deleted
+			(id, user_id, login_name,
+			login_name_type, gmt_create, gmt_modified,
+			gmt_last_login,
+			gmt_deleted,change_stage)
+			values
+			(?, ?, ?, ?, ?,
+			?, ?, @db@.sysdate,?)
+		</sql>
+	</operation>
+</table>

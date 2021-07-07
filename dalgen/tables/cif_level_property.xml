@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_level_property" sequence="seq_cif_level_property">
+	<operation name="insert">
+		<sql>
+			insert into cif_level_property
+			(id, level_name, level_value,
+			property_name, property_value, gmt_create,
+			gmt_modified, creater,
+			modifier)
+			values
+			(?, ?, ?, ?, ?,
+			@db@.sysdate, @db@.sysdate, ?, ?)
+		</sql>
+	</operation>
+	<operation name="selectById">
+		<sql>
+			select id, level_name, level_value,
+			property_name, property_value,
+			gmt_create,
+			gmt_modified, creater,
+			modifier from cif_level_property
+			where
+			id=?
+		</sql>
+	</operation>
+	<operation name="selectByLevelNameLevelValue" multiplicity="many">
+		<sql>
+			select id, level_name, level_value,
+			property_name, property_value,
+			gmt_create,
+			gmt_modified, creater,
+			modifier from cif_level_property
+			where level_name=? and level_value=?
+		</sql>
+	</operation>
+	<operation name="updatePropertyValue">
+		<sql>
+			update cif_level_property set level_value=?,
+			gmt_modified=@db@.sysdate, modifier=?
+			where level_name=? and level_value=?
+		</sql>
+	</operation>
+</table>

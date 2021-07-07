@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_one_auth_login_name" sequence="seq_cif_one_auth_login_name">
+    <operation name="insert">
+        <sql>
+            insert into cif_one_auth_login_name
+            (id, one_auth_id, login_name, login_name_type, gmt_create, gmt_modified)
+            values
+            (?, ?,
+            ?, ?,
+            @db@.sysdate,
+            @db@.sysdate)
+        </sql>
+    </operation>
+    <operation name="selectById">
+        <sql>
+            select ${ALL_COLUMNS} from cif_one_auth_login_name
+            where id=?
+        </sql>
+    </operation>
+    <operation name="selectByIdForUpdate">
+        <sql>
+            select ${ALL_COLUMNS} from cif_one_auth_login_name
+            where id=? for update nowait
+        </sql>
+    </operation>
+    <operation name="selectByLoginName">
+        <sql>
+            select ${ALL_COLUMNS} from cif_one_auth_login_name
+            where login_name=?
+        </sql>
+    </operation>
+    <operation name="selectByLoginNameAndLoginNameTypeForUpdate">
+        <sql>
+            select ${ALL_COLUMNS} from cif_one_auth_login_name
+            where login_name=? and login_name_type=?  for update nowait
+        </sql>
+    </operation>
+    <operation name="selectOneAuthIdByLoginName">
+        <sql>
+            select one_auth_id from cif_one_auth_login_name
+            where login_name=?
+        </sql>
+    </operation>
+    <operation name="updateLoginNameById">
+        <sql>
+            update cif_one_auth_login_name set login_name=? , gmt_modified=@db@.sysdate
+            where id=?
+        </sql>
+    </operation>
+    <operation name="selectByOneAuthId" multiplicity="many">
+        <sql>
+            select ${ALL_COLUMNS} from cif_one_auth_login_name
+            where one_auth_id=?
+        </sql>
+    </operation>
+    <!-- 根据登录名查询已存在的登录名 -->
+    <operation name="selectLoginNamesByLoginNames" multiplicity="many">
+        <extraparams>
+            <param name="loginNames" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            select login_name from
+            cif_one_auth_login_name where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select login_name from
+			cif_one_auth_login_name where login_name in
+			<foreach open="(" close=")" separator="," collection="loginNames" item="item">
+				#loginNames[]#
+			</foreach>
+			]]>
+        </sqlmap>
+    </operation>
+</table>

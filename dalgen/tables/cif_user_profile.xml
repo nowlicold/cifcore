@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_profile" sequence="seq_cif_user_profile">
+	<column name="enabled" javatype="boolean"/>
+	<operation name="insert">
+		<sql>
+			insert into cif_user_profile
+			(id, user_id, profile_name,
+			profile_value, gmt_create, gmt_modified,modifier,creater,enabled)
+			values
+			(?, ?,
+			?, ?, @db@.sysdate,
+			@db@.sysdate,?,?,?)
+		</sql>
+	</operation>
+	<operation name="selectById">
+		<sql>
+			select id, user_id, profile_name,
+			profile_value, gmt_create,
+			gmt_modified,modifier,creater,enabled from cif_user_profile
+			where
+			id=?
+		</sql>
+	</operation>
+	<operation name="selectEnabledByUserIdAndProfileName">
+		<extraparams>
+			<param name="userId" javatype="java.lang.String"/>
+			<param name="profileName" javatype="java.lang.String"/>
+			<param name="enabled" javatype="java.lang.Boolean"/>
+		</extraparams>
+		<sql>
+			select id, user_id, profile_name,
+			profile_value, gmt_create,
+			gmt_modified,modifier,creater,enabled from cif_user_profile
+			where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, user_id, profile_name,
+			profile_value, gmt_create,
+			gmt_modified,modifier,creater,enabled from cif_user_profile
+			where
+			user_id= #userId#
+			and profile_name=#profileName#
+			<if test="enabled != null">
+			  and enabled=#enabled#
+			</if>
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectEnabledByUserIdAndProfileNames" multiplicity="many">
+		<extraparams>
+			<param name="userId" javatype="java.lang.String"/>
+			<param name="profileNames" javatype="java.util.List"/>
+			<param name="enabled" javatype="java.lang.Boolean"/>
+		</extraparams>
+		<sql>
+			select id, user_id, profile_name,
+			profile_value, gmt_create,
+			gmt_modified,modifier,creater,enabled from cif_user_profile
+			where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, user_id, profile_name,
+			profile_value, gmt_create,
+			gmt_modified,modifier,creater,enabled from cif_user_profile
+			where
+			user_id= #userId#
+			and profile_name in
+			<foreach open="(" close=")" separator="," collection="profileNames" item="item">
+				#profileNames[]#
+			</foreach>
+			<if test="enabled != null">
+			  and enabled=#enabled#
+			</if>
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectEnabledByUserIdsAndProfileName" multiplicity="many">
+		<extraparams>
+			<param name="userIds" javatype="java.util.List"/>
+			<param name="profileName" javatype="java.lang.String"/>
+			<param name="enabled" javatype="java.lang.Boolean"/>
+		</extraparams>
+		<sql>select id, user_id, profile_name,
+			profile_value, gmt_create,
+			gmt_modified,modifier,creater,enabled from cif_user_profile where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, user_id, profile_name,
+			profile_value, gmt_create,
+			gmt_modified,modifier,creater,enabled from cif_user_profile
+			where
+			profile_name=#profileName#  and user_id in
+			<foreach open="(" close=")" separator="," collection="userIds" item="item">
+				#userIds[]#
+			</foreach>
+			<if test="enabled != null">
+			  and enabled=#enabled#
+			</if>
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="updateProfileValueByUserIdAndProfileName">
+		<sql>
+			update cif_user_profile set profile_value=?,
+			gmt_modified=@db@.sysdate,modifier=?,enabled=?
+			where user_id=?
+			and
+			profile_name=?
+		</sql>
+	</operation>
+	<operation name="updateProfileEnabled">
+		<sql>
+			update cif_user_profile set
+			gmt_modified=@db@.sysdate,modifier=?,enabled=?
+			where user_id=?
+			and
+			profile_name=?
+		</sql>
+	</operation>
+
+	<!-- 查询复用参数 -->
+	<extraparams name="searchParameters">
+		<param name="userId" javatype="java.lang.String"/>
+		<param name="profileName" javatype="java.lang.String"/>
+		<param name="profileValue" javatype="java.lang.String"/>
+		<param name="enabled" javatype="java.lang.Boolean"/>
+		<param name="minGmtCreate" javatype="java.util.Date"/>
+		<param name="maxGmtCreate" javatype="java.util.Date"/>
+		<param name="minGmtModified" javatype="java.util.Date"/>
+		<param name="maxGmtModified" javatype="java.util.Date"/>
+	</extraparams>
+
+	<!-- 查询复用条件sql -->
+	<sql name="searchWhereSql">
+		<![CDATA[ 
+			 <where>
+			               <if test="userId != null and userId != ''">  
+			               		and user_id=#userId#
+                            </if>
+						  	<if test="profileName != null and profileName != ''"> 
+							     and profile_name=#profileName#
+                            </if>
+                             <if test="profileValue != null and profileValue != ''"> 
+							     and profile_value=#profileValue#
+                            </if>
+                             <if test="enabled != null">                              
+							     and enabled= #enabled#
+                            </if>
+                            
+                            <if test="minGmtCreate != null">                              
+							     and gmt_create &gt;= #minGmtCreate#
+                            </if>
+                            <if test="maxGmtCreate != null">                              
+							     and gmt_create &lt;= #maxGmtCreate#
+                            </if>
+                            <if test="minGmtModified != null">                              
+							     and gmt_modified &gt;= #minGmtModified#
+                            </if>
+                             <if test="maxGmtModified != null">                              
+							     and gmt_modified &lt;= #maxGmtModified#
+                            </if> 
+                     </where>
+		]]>
+	</sql>
+	<operation name="search" multiplicity="many" paging="true">
+		<extraparams>
+			<param ref="searchParameters"/>
+		</extraparams>
+		<sql>
+			select id, user_id, profile_name,
+			profile_value, gmt_create,
+			gmt_modified,modifier,creater,enabled from cif_user_profile
+			where 1=0
+		</sql>
+		<sqlmap>
+				<![CDATA[ 
+            select id, user_id, profile_name,
+			profile_value, gmt_create,
+			gmt_modified,modifier,creater,enabled from cif_user_profile
+				<include refid="searchWhereSql"/>
+				order by id desc
+    			]]>
+		</sqlmap>
+	</operation>
+	<operation name="searchWithRecordCount" multiplicity="many" limitAmount="true">
+		<extraparams>
+			<param ref="searchParameters"/>
+		</extraparams>
+		<sql>
+			select id, user_id, profile_name,
+			profile_value, gmt_create,
+			gmt_modified,modifier,creater,enabled from cif_user_profile
+			where 1=0
+		</sql>
+		<sqlmap>
+				<![CDATA[ 
+            select id, user_id, profile_name,
+			profile_value, gmt_create,
+			gmt_modified,modifier,creater,enabled from cif_user_profile
+				<include refid="searchWhereSql"/>
+				order by id desc 
+    			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectRandomUserIdsByProfileNameEnabled" multiplicity="many" limitAmount="1">
+		<extraparams>
+			<param name="profileName" javatype="java.lang.String"/>
+			<param name="enabled" javatype="java.lang.Boolean"/>
+		</extraparams>
+		<sql>
+			select user_id from cif_user_profile where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[ select user_id from cif_user_profile where
+			profile_name=#profileName#  
+			  <if test="enabled != null">                              
+				 and enabled= #enabled#
+              </if>
+					 order by DBMS_RANDOM.random  
+			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="selectEnabledUserIdByProfileNameAndValue" multiplicity="many">
+		<sql>
+			select user_id
+			from cif_user_profile
+			where
+			profile_name = ? and
+			profile_value=? and
+			enabled = 1
+		</sql>
+	</operation>
+</table>

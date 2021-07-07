@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_role">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_role
+			(role_id,role_name,user_id,enabled,gmt_create,gmt_modified)
+			values
+			(?,?,?,?,@db@.sysdate,@db@.sysdate)
+
+		</sql>
+	</operation>
+
+	<operation name="selectEnabledByUserId" multiplicity="many">
+		<sql>
+			select
+			role_id,role_name,user_id,enabled,gmt_create,gmt_modified
+			from
+			cif_user_role where user_id=? and enabled=1
+		</sql>
+	</operation>
+
+	<operation name="countRolesByEnabledUserId">
+		<sql>
+			select count(*) as roles from cif_user_role where user_id=? and
+			enabled=1
+		</sql>
+	</operation>
+
+	<operation name="selectUserIdByRoleId">
+		<sql>
+			select user_id
+			from
+			cif_user_role where role_id=?
+		</sql>
+	</operation>
+	<operation name="selectRoleIdAndRoleNameByRoleIds" multiplicity="many" resultclass="java.util.Map">
+		<extraparams>
+			<param name="roleIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select role_id,role_name
+			from
+			cif_user_role where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select role_id,role_name
+			from
+			cif_user_role where role_id in
+			<foreach open="(" close=")" separator="," collection="roleIds" item="item">
+					#{item}
+			</foreach>
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectByRoleId">
+		<sql>
+			select
+			role_id,role_name,user_id,enabled,gmt_create,gmt_modified
+			from
+			cif_user_role where role_id=?
+		</sql>
+	</operation>
+	<operation name="selectByRoleName">
+		<sql>
+			select
+			role_id,role_name,user_id,enabled,gmt_create,gmt_modified
+			from
+			cif_user_role where role_name=?
+		</sql>
+	</operation>
+
+
+	<operation name="selectEnabledRoleIdsByUserId" multiplicity="many">
+		<sql>
+			select
+			role_id
+			from
+			cif_user_role where user_id=? and enabled=1
+		</sql>
+	</operation>
+
+	<operation name="selectRoleIdsByUserId" multiplicity="many">
+		<sql>
+			select
+			role_id
+			from
+			cif_user_role where user_id=?
+		</sql>
+	</operation>
+
+	<extraparams name="searchParameters">
+		<param name="roleId" javatype="java.lang.String"/>
+		<param name="userId" javatype="java.lang.String"/>
+		<param name="roleName" javatype="java.lang.String"/>
+		<param name="enabled" javatype="java.lang.Boolean"/>
+		<param name="maxGmtCreate" javatype="java.util.Date"/>
+		<param name="minGmtCreate" javatype="java.util.Date"/>
+	</extraparams>
+
+	<sql name="searchWhereSql">
+		<![CDATA[
+			<where>
+                            <if test="roleId != null and roleId != ''">
+	     			          ${cdata-start}
+							    	and role_id=#roleId#
+	                    	  ${cdata-end}
+                            </if>
+                 			<if test="userId != null and userId != ''">
+	     			          ${cdata-start}
+							    	and user_id=#userId#
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="roleName != null and roleName != ''">
+	     			          ${cdata-start}
+							    	and role_name=#roleName#
+	                    	  ${cdata-end}
+                            </if>
+	
+							<if test="enabled != null"> 
+							    	and enabled = #enabled#
+                    		</if> 
+                             <if test="minGmtCreate != null">
+	     			          ${cdata-start}
+							    	and gmt_create >= #minGmtCreate#
+	                    	  ${cdata-end}
+                            </if>
+                             <if test="maxGmtCreate != null">
+	     			          ${cdata-start}
+							    	and gmt_create <= #maxGmtCreate#
+	                    	  ${cdata-end}
+                            </if>
+                            
+                            
+                         </where> 
+		]]>
+	</sql>
+
+	<operation name="search" multiplicity="many" paging="true">
+		<extraparams>
+			<param ref="searchParameters"/>
+			<param name="orderBys" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			<![CDATA[
+			 select role_id, role_name, user_id, enabled, 
+			 gmt_create, gmt_modified
+			 from cif_user_role where 1=1
+			]]>
+		</sql>
+		<sqlmap>
+	
+			<![CDATA[
+    			    ${cdata-start}
+                     select role_id, role_name, user_id, enabled, gmt_create, gmt_modified from cif_user_role
+    			    ${cdata-end}
+					   <include refid="searchWhereSql"/>
+              			  <if test = "orderBys != null and !orderBys.isEmpty()">
+	         	               <foreach separator="," collection="orderBys" item="item">
+									$orderBys[]$
+								</foreach>
+	                        </if>
+              			 
+    			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="selectUserIdsByRoleIds" multiplicity="many">
+		<extraparams>
+			<param name="roleIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select user_id
+			from
+			cif_user_role where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select user_id
+			from
+			cif_user_role where role_id in
+			<foreach open="(" close=")" separator="," collection="roleIds" item="item">
+				#roleIds[]#
+			</foreach>
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectUserIdAndRoleIdsByRoleIds" multiplicity="many" resultclass="java.util.HashMap">
+		<extraparams>
+			<param name="roleIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select user_id
+			from
+			cif_user_role where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select user_id,role_id
+			from
+			cif_user_role where role_id in
+			<foreach open="(" close=")" separator="," collection="roleIds" item="item">
+					#{item}
+			</foreach>
+			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="selectEnabledByRoleIds" multiplicity="many">
+		<extraparams>
+			<param name="roleIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select role_id,role_name,user_id,enabled,gmt_create,gmt_modified
+			from
+			cif_user_role where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select role_id,role_name,user_id,enabled,gmt_create,gmt_modified
+			from
+			cif_user_role where role_id in
+			<foreach open="(" close=")" separator="," collection="roleIds" item="item">
+				#{item}
+			</foreach>
+			and enabled=1
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="updateRoleNameByRoleId">
+		<sql>
+			update cif_user_role
+			set role_name=? ,gmt_modified=@db@.sysdate
+			where role_id=?
+		</sql>
+	</operation>
+	<operation name="selectByUserIdAndRoleId">
+		<sql>
+			select
+			role_id,role_name,user_id,enabled,gmt_create,gmt_modified
+			from cif_user_role
+			where
+			role_id=? and user_id=?
+		</sql>
+	</operation>
+</table>

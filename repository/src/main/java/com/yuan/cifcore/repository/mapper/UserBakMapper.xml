@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuan.cifcore.repository.mapper.UserBakMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        user_id, login_name, login_password, real_name, status, email, qq, can_login, cert_type, cert_no, gmt_create, gmt_modified, email_validate, qq_validate, cell, cell_validate, account_password, nick_name, user_type_name, domain, sub_domain, gmt_change_identity, sex, birthday, one_auth_id
+    </sql>
+
+</mapper>

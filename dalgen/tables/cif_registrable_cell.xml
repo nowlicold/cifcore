@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_registrable_cell" sequence="seq_cif_registrable_cell">
+	<operation name="insert">
+		<sql>insert into cif_registrable_cell
+			(id,cell,enabled,gmt_create,gmt_modified,gmt_apply,memo,user_id,
+			register_from_type)values(?,?,?,@db@.sysdate,@db@.sysdate,?,?,?,?)
+		</sql>
+	</operation>
+	<operation name="selectEnabledCountByCell">
+		<sql>
+			select count(*) from cif_registrable_cell
+			where cell=? and
+			enabled=1
+		</sql>
+	</operation>
+	<operation name="selectCountByCell">
+		<sql>
+			select count(*) from cif_registrable_cell
+			where cell=?
+		</sql>
+	</operation>
+
+	<operation name="selectEnabledByUserIdAndFromType">
+		<sql>
+			select count(cell) from cif_registrable_cell
+			where enabled=1 and
+			user_id=? and register_from_type=?
+		</sql>
+	</operation>
+
+	<operation name="selectByCell">
+		<sql>
+			select
+			id,cell,enabled,gmt_create,gmt_modified,gmt_apply,memo,user_id,
+			register_from_type
+			from
+			cif_registrable_cell
+			where cell=?
+		</sql>
+	</operation>
+	<operation name="updateEnabled">
+		<sql>
+			update cif_registrable_cell set
+			enabled=?,gmt_apply=?,memo=?,gmt_modified=@db@.sysdate
+			where cell=?
+		</sql>
+	</operation>
+	<!-- 查询复用参数 -->
+	<extraparams name="searchParameters">
+		<param name="cell" javatype="java.lang.String"/>
+		<param name="enabled" javatype="java.lang.Boolean"/>
+		<param name="gmtCreateStart" javatype="java.util.Date"/>
+		<param name="gmtCreateEnd" javatype="java.util.Date"/>
+		<param name="gmtModifiedStart" javatype="java.util.Date"/>
+		<param name="gmtModifiedEnd" javatype="java.util.Date"/>
+		<param name="gmtApplyStart" javatype="java.util.Date"/>
+		<param name="gmtApplyEnd" javatype="java.util.Date"/>
+		<param name="userId" javatype="java.lang.String"/>
+		<param name="registerFromType" javatype="java.lang.String"/>
+	</extraparams>
+
+	<!-- 查询复用条件sql -->
+	<sql name="searchWhereSql">
+		<![CDATA[ 
+			 <where>
+			               <if test="cell != null and cell != ''"> 
+							    and cell=#cell#
+                            </if>
+						  	<if test="enabled != null"> 
+							     and enabled=#enabled#
+                            </if>
+                           
+                            <if test="gmtCreateStart != null">                              
+							     and gmt_create &gt;= #gmtCreateStart#
+                            </if>
+                              <if test="gmtCreateEnd != null">                              
+							     and gmt_create &lt;= #gmtCreateEnd#
+                            </if>
+                              <if test="gmtModifiedStart != null">                              
+							     and gmt_modified &gt;= #gmtModifiedStart#
+                            </if>
+                              <if test="gmtModifiedEnd != null">                              
+							     and gmt_modified &lt;= #gmtModifiedEnd#
+                            </if>
+                              <if test="gmtApplyStart != null">                              
+							     and gmt_apply &gt;= #gmtApplyStart#
+                            </if>
+                              <if test="gmtApplyEnd != null">                              
+							     and gmt_apply &lt;= #gmtApplyEnd#
+                            </if>
+                             <if test="userId != null and userId != ''"> 
+							    and user_id=#userId#
+                            </if>
+                            <if test="registerFromType != null and registerFromType != ''">
+			         			and register_from_type=#registerFromType#
+              				</if>
+                     </where>
+		]]>
+	</sql>
+	<operation name="search" multiplicity="many" paging="true">
+		<extraparams>
+			<param ref="searchParameters"/>
+		</extraparams>
+		<sql>
+			select
+			id,cell,enabled,gmt_create,gmt_modified,gmt_apply,memo,user_id,
+			register_from_type
+			from
+			cif_registrable_cell
+			where 1=0
+		</sql>
+		<sqlmap>
+				<![CDATA[ 
+            select
+			id,cell,enabled,gmt_create,gmt_modified ,gmt_apply,memo,user_id, register_from_type
+			from cif_registrable_cell
+				<include refid="searchWhereSql"/>	
+				order by gmt_create desc
+    			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="selectEnabledByCellAndFromType">
+		<extraparams>
+			<param name="cell" javatype="java.lang.String"/>
+			<param name="registerFromType" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select count(cell) from cif_registrable_cell
+			where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[ 
+			select count(cell) from cif_registrable_cell
+			where enabled=1
+			and cell=#cell# 
+			<if test="registerFromType != null and registerFromType != ''">
+       			and register_from_type=#registerFromType#
+         	</if>
+			]]>
+		</sqlmap>
+	</operation>
+
+
+</table>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_logo_gather" sequence="seq_cif_user_logo_gather">
+	<operation name="insert">
+		<sql>insert into cif_user_logo_gather
+			(id,user_id,gather_url,status,gmt_create,gmt_modified,gather_count,gmt_next,gmt_gathered,gather_result)
+			values
+			(?,?,?,?,@db@.sysdate,@db@.sysdate,?,?,?,?)
+
+		</sql>
+	</operation>
+	<operation name="selectById">
+		<sql>
+			select
+			id,user_id,gather_url,status,gmt_create,gmt_modified,gather_count,gmt_next,gmt_gathered,gather_result
+			from cif_user_logo_gather where id=?
+		</sql>
+	</operation>
+	<operation name="selectGatherableByUserId" multiplicity="many">
+		<sql>
+			select
+			id,user_id,gather_url,status,gmt_create,gmt_modified,gather_count,gmt_next,gmt_gathered,gather_result
+			from cif_user_logo_gather where user_id=? and status in
+			('GATHER_READY','GATHER_RETRY')
+		</sql>
+	</operation>
+	<operation name="updateGatherSuccess">
+		<sql>
+			update cif_user_logo_gather set
+			status='GATHER_SUCCESS',gmt_modified=@db@.sysdate,gather_result=?,
+			gmt_gathered=@db@.sysdate
+			where id=?
+		</sql>
+	</operation>
+	<operation name="updateGatherRetry">
+		<sql>
+			update cif_user_logo_gather set
+			status='GATHER_RETRY',gmt_next=?,gather_result=?,gmt_modified=@db@.sysdate,
+			gmt_gathered=@db@.sysdate
+			where
+			id=?
+		</sql>
+	</operation>
+</table>

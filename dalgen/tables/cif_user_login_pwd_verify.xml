@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_login_pwd_verify">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_login_pwd_verify
+			(user_id,gmt_failed,retry_count,gmt_success,gmt_create,gmt_modified)
+			values
+			(?,?,?,?,@db@.sysdate,@db@.sysdate)
+		</sql>
+	</operation>
+	<operation name="selectByUserId">
+		<sql>
+			select
+			user_id,gmt_failed,retry_count,gmt_success,gmt_create,gmt_modified
+			from cif_user_login_pwd_verify where user_id=?
+		</sql>
+	</operation>
+
+	<!--验证校验登录密码失败后，更新信息 -->
+	<operation name="updateVerifyFail">
+		<sql>
+			update cif_user_login_pwd_verify set
+			retry_count=retry_count+1,gmt_modified=@db@.sysdate,gmt_failed=@db@.sysdate
+			where
+			user_id=?
+		</sql>
+	</operation>
+	<!--验证校验登录密码成功后，更新信息 -->
+	<operation name="updateVerifySuccess">
+		<sql>
+			update cif_user_login_pwd_verify set
+			gmt_modified=@db@.sysdate,gmt_success=@db@.sysdate,retry_count=0
+			where
+			user_id=?
+		</sql>
+	</operation>
+	<operation name="updateResetVerify">
+		<sql>
+			update cif_user_login_pwd_verify set
+			retry_count=0,gmt_modified=@db@.sysdate
+			where
+			user_id=?
+		</sql>
+	</operation>
+
+</table>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="CIF_USER_EXT">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_ext
+			(user_id,
+			protect_password_issue,
+			protect_password_key, gmt_modified,
+			gmt_create)
+			values
+			(?,?,?,
+			@db@.sysdate,@db@.sysdate)
+		</sql>
+	</operation>
+
+	<operation name="selectByUserId">
+		<sql>
+			select user_id,
+			protect_password_issue,
+			protect_password_key,
+			gmt_modified, gmt_create from
+			cif_user_ext where
+			user_id=?
+		</sql>
+	</operation>
+
+	<operation name="updateProtectePasswordInfo">
+		<sql>
+			update cif_user_ext set protect_password_issue=?,
+			protect_password_key=?, gmt_modified=@db@.sysdate where
+			user_id=?
+		</sql>
+	</operation>
+</table>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_forbidden_log" sequence="seq_cif_forbidden_log">
+	<operation name="insert">
+		<sql>
+			insert into cif_forbidden_log
+			(id, forbidden_id, action, content,
+			gmt_create, operator_id, operator_type)
+			values
+			(?, ?, ?, ?,
+			@db@.sysdate, ? ,?)
+		</sql>
+	</operation>
+</table>

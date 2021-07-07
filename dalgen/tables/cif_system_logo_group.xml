@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="CIF_SYSTEM_LOGO_GROUP" sequence="SEQ_CIF_SYSTEM_LOGO_GROUP">
+	<operation name="insert">
+		<sql>
+			insert into cif_system_logo_group
+			(id, code, name,
+			gmt_create, gmt_modified,
+			order_number,enabled)
+			values
+			(?, ?, ?,
+			@db@.sysdate,@db@.sysdate,
+			?,?)
+		</sql>
+	</operation>
+
+	<operation name="selectAllEnabled" multiplicity="many">
+		<sql>
+			select id, code, name,
+			gmt_create, gmt_modified,
+			order_number,enabled from cif_system_logo_group
+			where enabled=1 order by order_number desc
+		</sql>
+	</operation>
+</table>

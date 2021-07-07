@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_register">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_register
+			(user_id,register_ip,from_user_id,from_type_code,device_type,device_info,platform_type,gmt_create,gmt_modified,from_properties)
+			values
+			(?,?,?,?,?,?,?,@db@.sysdate,@db@.sysdate,?)
+		</sql>
+	</operation>
+
+	<operation name="selectByUserId">
+		<sql>
+			select
+			user_id,register_ip,from_user_id,from_type_code,device_type,device_info,platform_type,gmt_create,gmt_modified,from_properties
+			from cif_user_register where user_id=?
+		</sql>
+	</operation>
+	<operation name="selectRegisterIpByUserId">
+		<sql>
+			select register_ip
+			from cif_user_register where user_id=?
+		</sql>
+	</operation>
+	<operation name="updateRegisterIpByUserId">
+		<sql>
+			update cif_user_register set
+			gmt_modified=@db@.sysdate , register_ip=?
+			where
+			user_id=?
+		</sql>
+	</operation>
+	<operation name="selectRegisterFromInfoByUserIdsAndRegisterFromTypeCodes" multiplicity="many" resultclass="java.util.HashMap">
+		<extraparams>
+			<param name="userIds" javatype="java.util.List"/>
+			<param name="registerFromTypeCodes" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select user_id,register_from_user_id,register_from_type_code
+			from
+			cif_user
+			where 0=1
+		</sql>
+		<sqlmap>
+		<![CDATA[
+			select user_id,register_from_user_id,register_from_type_code
+			from cif_user where
+			
+				<foreach open="user_id in (" close=")" separator="," collection="userIds" item="item">
+					${cdata-start}
+						#userIds[]#
+					${cdata-end}
+				</foreach>
+				<if test="registerFromTypeCodes != null and registerFromTypeCodes.isEmpty()">
+							  and
+					<foreach open="and register_from_type_code in (" close=")" separator="," collection="registerFromTypeCodes" item="item">
+						#registerFromTypeCodes[]#
+					</foreach>
+				</if>
+			
+		]]>
+		</sqlmap>
+	</operation>
+</table>

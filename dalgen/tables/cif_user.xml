@@ -1,0 +1,1002 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd">
+<table sqlname="cif_user">
+    <column name="can_login" javaType="boolean"/>
+    <column name="email_validate" javaType="boolean"/>
+    <column name="qq_validate" javaType="boolean"/>
+    <column name="cell_validate" javaType="boolean"/>
+    <operation name="insert">
+        <sql>
+            insert into cif_user
+            (user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id)
+            values
+            (?,?,?,?,?,?,?,?,?,?,@db@.sysdate,@db@.sysdate,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        </sql>
+    </operation>
+
+    <operation name="selectUserIdsByCertNo" multiplicity="many" limitAmount="true">
+        <sql>
+            select user_id from cif_user where cert_no=? order by gmt_create
+            asc
+        </sql>
+    </operation>
+
+    <operation name="selectOneAuthIdByUserId">
+        <sql>
+            select one_auth_id from cif_user where user_id=?
+        </sql>
+    </operation>
+
+    <operation name="selectCertNoByUserId">
+        <sql>
+            select cert_no from cif_user where user_id=?
+        </sql>
+    </operation>
+    <operation name="selectUserCellsWithSameCertNoAndTypeByCell" multiplicity="many">
+        <extraparams>
+            <param name="cell" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select user_id from cif_user where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select distinct (a.cell)
+          		from cif_user a
+        		where exists (select 1
+                      from CIF_USER b
+                     where b.cell =#cell#
+                       and b.cert_type=a.cert_type
+                       and b.cert_no = a.cert_no)
+         	 	and a.cell is not null
+		]]>
+        </sqlmap>
+    </operation>
+
+
+    <operation name="selectValidatedCellByUserId">
+        <sql>
+            select cell from cif_user where user_id=? and cell_validate=1
+        </sql>
+    </operation>
+    <operation name="selectGmtCreateByUserId">
+        <sql>
+            select gmt_create from cif_user where user_id=?
+        </sql>
+    </operation>
+
+    <operation name="selectByThirdUserIdAndDomainAndThirdChannel" multiplicity="many">
+        <extraparams>
+            <param name="thirdUserId" javatype="java.lang.String"/>
+            <param name="thirdChannel" javatype="java.lang.String"/>
+            <param name="domain" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select
+            user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id
+            from
+            cif_user
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select
+			user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+			gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+			gmt_change_identity,sex,birthday,one_auth_id
+			from
+			cif_user t
+			where exists (
+				select m.user_id from cif_third_user_mapping m where  m.third_user_id = #thirdUserId#  and m.third_channel = #thirdChannel#
+				 and domain=#domain# and t.user_id = m.user_id
+			)
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectBySubDomainAndOneAuthId" multiplicity="many">
+        <extraparams>
+            <param name="subDomain" javatype="java.lang.String"/>
+            <param name="oneAuthId" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select
+            user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id
+            from
+            cif_user
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+				select
+				user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+				gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+				gmt_change_identity,sex,birthday,one_auth_id
+				from
+				cif_user
+				where sub_domain=#subDomain# and one_auth_id=#oneAuthId#
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectByUserId">
+        <sql>
+            select
+            user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id
+            from
+            cif_user
+            where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="selectByNickName" multiplicity="many">
+        <extraparams>
+            <param name="nickName" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select
+            user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id
+            from
+            cif_user
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select
+			user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+			gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+			gmt_change_identity,sex,birthday,one_auth_id
+			from
+			cif_user
+			where
+			nick_name like '%'||#nickName#||'%'
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectUserIdsByNickNameAndGmtCreate" multiplicity="many">
+        <extraparams>
+            <param name="nickName" javatype="java.lang.String"/>
+            <param name="beginCreateDate" javatype="java.util.Date"/>
+            <param name="endCreateDate" javatype="java.util.Date"/>
+        </extraparams>
+        <sql>
+            select
+            user_id
+            from
+            cif_user
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select
+			user_id
+			from
+			cif_user
+			<where>
+			 	   <if test="beginCreateDate != null">
+	     			  ${cdata-start}
+							and gmt_create >= #{beginCreateDate}
+	                  ${cdata-end}
+                   </if>
+                   <if test="endCreateDate != null">
+	     			  ${cdata-start}
+							and gmt_create <= #{endCreateDate}
+	                  ${cdata-end}
+                   </if>
+                   <if test="nickName != null and nickName != ''">
+	     			  ${cdata-start}
+							and nick_name like CONCAT( '%', #{nickName}, '%' )
+	                  ${cdata-end}
+                   </if>
+			</where>
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectCellValidatedByUserId">
+        <sql>
+            select cell_validate
+            from
+            cif_user where
+            user_id=?
+        </sql>
+    </operation>
+
+    <operation name="selectUserByNickNameAndSubDomain" multiplicity="many">
+        <sql>
+            select
+            user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id
+            from
+            cif_user where
+            nick_name=? and sub_domain=?
+        </sql>
+    </operation>
+
+    <operation name="selectByValidatedCell" multiplicity="many" limitAmount="true">
+        <sql>
+            select
+            user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id
+            from cif_user where
+            cell=? and cell_validate='1'
+        </sql>
+    </operation>
+    <operation name="selectCountByCell">
+        <sql>
+            select count(*)
+            from
+            cif_user where cell=?
+        </sql>
+    </operation>
+    <operation name="selectCountBySubDomainAndOneAuthId">
+        <sql>
+            select count(*)
+            from
+            cif_user where sub_domain=? and one_auth_id=?
+        </sql>
+    </operation>
+    <operation name="selectUserIdsByValidatedCell" multiplicity="many" limitAmount="true">
+        <sql>
+            select user_id from cif_user where cell=? and
+            cell_validate='1'
+            order by gmt_create asc
+        </sql>
+    </operation>
+
+    <operation name="selectByUserIds" multiplicity="many">
+        <extraparams>
+            <param name="userIds" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            select
+            user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id
+            from cif_user
+            where 0=1
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+			gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+			gmt_change_identity,sex,birthday,one_auth_id
+			from cif_user where
+			<foreach open="user_id in (" close=")" separator="," collection="userIds" item="item">
+				${cdata-start}
+					#{item}
+				${cdata-end}
+			</foreach>
+		]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectUserByLoginName">
+        <sql>
+            select
+            user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id
+            from
+            cif_user
+            where
+            login_name=?
+        </sql>
+    </operation>
+
+    <operation name="selectEveryDayAddUserCountGroupByDate" multiplicity="many" resultClass="java.util.HashMap">
+        <extraparams>
+            <param name="beginCreateDate" javatype="java.util.Date"/>
+            <param name="endCreateDate" javatype="java.util.Date"/>
+        </extraparams>
+        <sql>
+            <![CDATA[
+			select gmt_create,count(user_id) from cif_user where gmt_create<='endCreateDate' and
+			gmt_create>='beginCreateDate'
+			]]>
+        </sql>
+        <sqlmap>
+            <![CDATA[
+    			    ${cdata-start}
+                      select to_char(gmt_create,'yyyy-mm-dd') as create_date,count(user_id) as user_count from cif_user where
+                      gmt_create >=  #beginCreateDate#
+                      and gmt_create <=  #endCreateDate#
+                      group by to_char(gmt_create,'yyyy-mm-dd') order by to_char(gmt_create,'yyyy-mm-dd') asc
+    			    ${cdata-end}
+    			]]>
+
+        </sqlmap>
+    </operation>
+    <operation name="selectAllUserCountByEndRegisterDate" resultClass="long">
+        <sql>
+            select count(*) from cif_user where gmt_create &lt;=?
+        </sql>
+    </operation>
+
+    <operation name="search" multiplicity="many" paging="true">
+        <extraparams>
+            <param name="userId" javatype="java.lang.String"/>
+            <param name="userTypeName" javatype="java.lang.String"/>
+            <param name="loginName" javatype="java.lang.String"/>
+            <param name="realName" javatype="java.lang.String"/>
+            <param name="email" javatype="java.lang.String"/>
+            <param name="qq" javatype="java.lang.String"/>
+            <param name="cell" javatype="java.lang.String"/>
+            <param name="certNo" javatype="java.lang.String"/>
+            <param name="beginCreateDate" javatype="java.util.Date"/>
+            <param name="endCreateDate" javatype="java.util.Date"/>
+            <param name="orderBy" javatype="java.lang.String"/>
+            <param name="userGrade" javatype="java.lang.String"/>
+            <param name="thirdParentUserId" javatype="java.lang.String"/>
+            <param name="domainList" javatype="java.util.List"/>
+            <param name="subDomainList" javatype="java.util.List"/>
+            <param name="nickNameLike" javatype="java.lang.String"/>
+            <param name="oneAuthId" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select
+            user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id
+            from
+            cif_user
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+    	     ${cdata-start}
+				select user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+			gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+			gmt_change_identity,sex,birthday,one_auth_id
+				from cif_user  u
+				${cdata-end}
+				 <where>
+						  	<if test="userId != null and userId != ''">
+	     			          ${cdata-start}
+							    	and user_id=#{userId}
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="userTypeName != null and userTypeName != ''">
+	     			          ${cdata-start}
+							    	and user_type_name=#{userTypeName}
+	                    	  ${cdata-end}
+                            </if>
+                 			<if test="loginName != null and loginName != ''">
+	     			          ${cdata-start}
+							    	and login_name like #{loginName}
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="realName != null and realName != ''">
+	     			          ${cdata-start}
+							    	and real_name=#{realName}
+	                    	  ${cdata-end}
+                            </if>
+                             <if test="email != null and email != ''">
+	     			          ${cdata-start}
+							    	and email=#{email}
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="qq != null and qq != ''">
+	     			          ${cdata-start}
+							    	and qq=#{qq}
+	                    	  ${cdata-end}
+                            </if>
+                              <if test="cell != null and cell != ''">
+	     			          ${cdata-start}
+							    	and cell=#{cell}
+	                    	  ${cdata-end}
+                            </if>
+                              <if test="certNo != null and certNo != ''">
+	     			          ${cdata-start}
+							    	and cert_no=#{certNo}
+	                    	  ${cdata-end}
+                            </if>
+                             <if test="beginCreateDate != null">
+	     			          ${cdata-start}
+							    	and gmt_create >= #{beginCreateDate}
+	                    	  ${cdata-end}
+                            </if>
+                             <if test="endCreateDate != null">
+	     			          ${cdata-start}
+							    	and gmt_create <= #{endCreateDate}
+	                    	  ${cdata-end}
+                            </if>
+	                    	   <if test="userGrade != null and userGrade != ''">
+	     			          ${cdata-start}
+							    	and exists(select 1 from cif_user_level l where l.user_id=u.user_id and l.level_name='GRADE' and level_value=#{userGrade})
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="thirdParentUserId != null and thirdParentUserId != ''">
+                            		and exists (select user_id from cif_third_user_mapping t where t.third_parent_user_id=#{thirdParentUserId}  and t.user_id = u.user_id)
+                            </if>
+                            <if test="domainList != null and !domainList.isEmpty()">
+							  and
+				               <foreach open="domain in (" close=")" separator="," collection="domainList" item="item">
+									#{item}
+								</foreach>
+							</if>
+							<if test="subDomainList != null and !subDomainList.isEmpty()">
+							  and
+				               <foreach open="sub_domain in (" close=")" separator="," collection="subDomainList" item="item">
+									#{item}
+								</foreach>
+							</if>
+							<if test="nickNameLike != null and nickNameLike != ''">
+	     			          ${cdata-start}
+							    	and nick_name like CONCAT( '%', #{nickNameLike}, '%' )
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="oneAuthId != null and oneAuthId != ''">
+	     			          ${cdata-start}
+							    	and one_auth_id=#{oneAuthId}
+	                    	  ${cdata-end}
+                            </if>
+              	</where>
+              	
+			]]>
+
+        <![CDATA[<if test="orderBy != null and orderBy != ''">
+		     			          ${cdata-start}
+								    	order by ${orderBy}
+		                    	  ${cdata-end}
+	                         </if>]]></sqlmap>
+    </operation>
+
+    <operation name="updateUserInfoByUser" paramType="object">
+        <sql>
+            update cif_user set
+            qq=?,
+            email=?,
+            gmt_modified=@db@.sysdate,
+            real_name=?,
+            cert_no=?,cert_type=?,
+            account_password=?,
+            nick_name=?,sex=?,birthday=?
+            where
+            user_id=?
+        </sql>
+        <sqlmap> <![CDATA[
+    			    ${cdata-start}
+                        update cif_user set qq=#qq#,email=#email#, gmt_modified=@db@.sysdate
+    			    ${cdata-end}
+					    
+<trim prefix="set" suffixOverrides=","/>
+						  	<if test="realName != null and realName != ''">
+	     			          ${cdata-start}
+							    	, real_name=#{realName}
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="accountPassword != null and accountPassword != ''">
+	     			          ${cdata-start}
+							    	, account_password=#{accountPassword}
+	                    	  ${cdata-end}
+                            </if>
+                 			<if test="certNo != null and certNo != ''">
+	     			          ${cdata-start}
+							    	, cert_no=#{certNo}
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="certType != null and certType != ''">
+	     			          ${cdata-start}
+							    	, cert_type=#{certType}
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="nickName != null and nickName != ''">
+	     			          ${cdata-start}
+							    	, nick_name=#{nickName}
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="sex != null and sex != ''">
+	     			          ${cdata-start}
+							    	, sex=#{sex}
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="birthday != null and birthday != ''">
+	     			          ${cdata-start}
+							    	, birthday=#{birthday}
+	                    	  ${cdata-end}
+                            </if>
+              			 
+              		where user_id=#userId#
+    			]]>
+        </sqlmap>
+    </operation>
+
+
+    <operation name="updateLoginPassword">
+        <sql>
+            update cif_user set
+            login_password=?,gmt_modified=@db@.sysdate
+            where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="updateAccountPassword">
+        <sql>
+            update cif_user set
+            account_password=?,gmt_modified=@db@.sysdate
+            where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="updateActiveUserByEmail">
+        <sql>
+            update cif_user set status=?,
+            email_validate=?,gmt_modified=@db@.sysdate
+            where
+            user_id=?
+        </sql>
+    </operation>
+
+    <operation name="updateEmailValidate">
+        <sql>
+            update cif_user set
+            email_validate=?,gmt_modified=@db@.sysdate
+            where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="updateEmail">
+        <sql>
+            update cif_user set
+            email=?,email_validate=?,gmt_modified=@db@.sysdate
+            where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="updateCellValidate">
+        <sql>
+            update cif_user set
+            cell_validate=?,cell=?,gmt_modified=@db@.sysdate
+            where
+            user_id=?
+        </sql>
+    </operation>
+
+    <operation name="updateUserCanLogin">
+        <sql>
+            update cif_user set
+            can_login=?,gmt_modified=@db@.sysdate
+            where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="updateUsersCanLogin">
+        <extraparams>
+            <param name="userIds" javatype="java.util.List"/>
+            <param name="canLogin" javatype="boolean"/>
+
+        </extraparams>
+        <sql>
+            update cif_user set
+            gmt_modified=@db@.sysdate
+            where
+            1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			update cif_user set
+			can_login=#canLogin#,gmt_modified=@db@.sysdate
+			where
+			user_id in
+			<foreach open=" (" close=")" separator="," collection="userIds" item="item">
+				 #{item}
+			</foreach>
+			]]>
+        </sqlmap>
+    </operation>
+    <operation name="updateRealNameCertNoAndCertType">
+        <extraparams>
+            <param name="realName" javatype="java.lang.String"/>
+            <param name="certNo" javatype="java.lang.String"/>
+            <param name="certType" javatype="java.lang.String"/>
+            <param name="userId" javatype="java.lang.String"/>
+            <param name="gmtChangeIdentity" javatype="java.util.Date"/>
+        </extraparams>
+        <sql>
+            update cif_user set gmt_modified=@db@.sysdate where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			update cif_user set gmt_modified=@db@.sysdate
+			<if test="gmtChangeIdentity != null">
+				,gmt_change_identity=#{gmtChangeIdentity}
+			</if>
+			<if test="realName != null and realName != ''">
+				,real_name=#{realName}
+			</if>
+			<if test="certNo != null and certNo != ''">
+				,cert_no=#{certNo}
+			</if>
+			<if test="certType != null and certType != ''">
+				,cert_type=#{certType}
+			</if>
+			where user_id=#userId#
+			]]>
+        </sqlmap>
+    </operation>
+    <operation name="selectCountByUserId">
+        <sql>
+            select count(*) from cif_user
+            where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="selectDomainByUserId" resultclass="java.util.HashMap">
+        <sql>
+            select domain,sub_domain from cif_user
+            where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="selectLoginNameByUserId">
+        <sql>
+            select login_name from cif_user
+            where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="selectCountByLoginName">
+        <sql>
+            select count(*) from cif_user
+            where
+            login_name=?
+        </sql>
+    </operation>
+    <operation name="selectUserIdsByUserIds" multiplicity="many">
+        <extraparams>
+            <param name="userIds" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            select user_id from cif_user where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+				select user_id from cif_user
+				where
+				user_id in
+				<foreach open=" (" close=")" separator="," collection="userIds" item="item">
+					#{item}
+				</foreach>
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectUserIdLoginNameByLoginNames" multiplicity="many" resultclass="java.util.HashMap">
+        <extraparams>
+            <param name="loginNames" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            select login_name,user_id from cif_user where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+				select login_name,user_id  from cif_user
+				where
+				login_name in
+				<foreach open=" (" close=")" separator="," collection="loginNames" item="item">
+					#{item}
+				</foreach>
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectUserIdNickNameByUserIds" multiplicity="many" resultclass="java.util.HashMap">
+        <extraparams>
+            <param name="userIds" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            select nick_name,user_id from cif_user where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+				select nick_name,user_id  from cif_user
+				where
+				user_id in
+				<foreach open=" (" close=")" separator="," collection="userIds" item="item">
+					#{item}
+				</foreach>
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectUserIdLoginNameByUserIds" multiplicity="many" resultclass="java.util.HashMap">
+        <extraparams>
+            <param name="userIds" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            select login_name,user_id from cif_user where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+				select login_name,user_id  from cif_user
+				where
+				user_id in
+				<foreach open=" (" close=")" separator="," collection="userIds" item="item">
+					#{item}
+				</foreach>
+			]]>
+        </sqlmap>
+    </operation>
+
+
+    <operation name="selectUserIdsByCell" multiplicity="many" limitAmount="true">
+        <sql>
+            select user_id
+            from cif_user where cell=?
+        </sql>
+    </operation>
+    <operation name="selectRealNameByUserId">
+        <sql>
+            select real_name from cif_user where user_id=?
+        </sql>
+    </operation>
+    <operation name="selectUserIdAndRealNameByUserIds" multiplicity="many" resultclass="java.util.HashMap">
+        <extraparams>
+            <param name="userIds" javatype="java.util.List"/>
+        </extraparams>
+        <sql>
+            select user_id,real_name from cif_user where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select user_id,real_name from cif_user where user_id in
+			<foreach open="(" close=")" separator="," collection="userIds" item="item">
+						#{item}
+			</foreach>
+		]]>
+        </sqlmap>
+    </operation>
+    <operation name="updateUserDomain">
+        <sql>
+            update cif_user set
+            domain=?,sub_domain=?,gmt_modified=@db@.sysdate
+            where user_id=?
+        </sql>
+    </operation>
+
+    <resultmap name="USER_ID_AND_IDENTITY_DATE_DO" className="com.yuan.cifcore.repository.entity.ext.UserIdAndIdentityDateDO">
+        <column name="user_id" javaType="java.lang.String"/>
+        <column name="gmt_change_identity" javaType="java.util.Date"/>
+    </resultmap>
+
+    <operation name="selectUserIdAndIdentityDateByRealNameAndCertNoAndCertType" multiplicity="many" resultMap="USER_ID_AND_IDENTITY_DATE_DO">
+        <extraparams>
+            <param name="realName" javatype="java.lang.String"/>
+            <param name="certNo" javatype="java.lang.String"/>
+            <param name="certType" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select user_id,gmt_change_identity from cif_user where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select user_id,gmt_change_identity from cif_user
+			<where>
+				<if test="realName != null and realName != ''">
+					and real_name=#{realName}
+				</if>
+				<if test="certNo != null and certNo != ''">
+					and cert_no=#{certNo}
+				</if>
+				<if test="certType != null and certType != ''">
+					and cert_type=#{certType}
+				</if>
+			</where>
+		]]>
+        </sqlmap>
+    </operation>
+    <operation name="selectUserIdAndLoginNameMapByUserIdAndDomain" multiplicity="many" resultClass="java.util.HashMap">
+        <extraparams>
+            <param name="userId" javatype="java.lang.String"/>
+            <param name="domain" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select user_id,login_name
+            from cif_user where 1=0
+        </sql>
+        <sqlmap>
+            select u.user_id,u.login_name
+            from cif_user u
+            where u.user_id in
+            (
+            select
+            t.user_id
+            from
+            cif_third_user_mapping t where
+            t.third_parent_user_id =
+            (select
+            m.third_parent_user_id from
+            CIF_THIRD_USER_MAPPING m where
+            m.user_id=#userId# )
+            and
+            t.domain=#domain#
+            )
+            order by u.gmt_create desc
+        </sqlmap>
+    </operation>
+
+    <operation name="selectByMaxGmtModifiedAndRecordCount" multiplicity="many" limitAmount="true">
+        <extraparams>
+            <param name="gmtModified" javatype="java.util.Date"/>
+        </extraparams>
+        <sql>
+            select
+            user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id
+            from
+            cif_user
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+				select
+				user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+			gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+			gmt_change_identity,sex,birthday,one_auth_id
+				from
+				cif_user
+				<where>
+					<if test="gmtModified != null">
+						gmt_modified  &gt; #{gmtModified}
+					</if>
+				</where>
+				order by gmt_modified asc
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectByMaxGmtModified" multiplicity="many">
+
+        <sql>
+            select
+            user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id
+            from
+            cif_user
+            where
+            gmt_modified = ?
+        </sql>
+    </operation>
+
+    <operation name="updateLoginNameByUserId">
+        <sql>
+            update cif_user
+            set login_name=?,
+            gmt_modified=@db@.sysdate
+            where
+            user_id=?
+        </sql>
+    </operation>
+    <operation name="selectByOneAuthId" multiplicity="many">
+
+        <sql>
+            select
+            user_id,login_name,login_password,real_name,status,email,qq,can_login,cert_type,cert_no,gmt_create,
+            gmt_modified,email_validate,qq_validate,cell,cell_validate,account_password,nick_name,user_type_name,domain,sub_domain,
+            gmt_change_identity,sex,birthday,one_auth_id
+            from
+            cif_user
+            where
+            one_auth_id = ? order by gmt_create desc
+        </sql>
+    </operation>
+    <operation name="selectCountByOneAuthId">
+        <sql>
+            select count(*)
+            from
+            cif_user
+            where one_auth_id = ?
+        </sql>
+    </operation>
+    <operation name="selectUserIdsByOneAuthId" multiplicity="many">
+        <sql>
+            select
+            user_id
+            from
+            cif_user
+            where one_auth_id = ?
+        </sql>
+    </operation>
+    <operation name="selectHasNotCertNoUserIdByThirdParentUserIdAndThirdChannel" multiplicity="many">
+        <extraparams>
+            <param name="thirdParentUserId" javatype="java.lang.String"/>
+            <param name="thirdChannel" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select
+            user_id
+            from
+            cif_user
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select
+			user_id
+			from
+			cif_user t
+			where exists (
+				select m.user_id from cif_third_user_mapping m where  m.third_parent_user_id = #thirdParentUserId#  and m.third_channel = #thirdChannel#
+				  and t.user_id = m.user_id
+			) and t.cert_no is null
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectHasNoModifiedCellUserIdsByThirdParentUserIdAndThirdChannelAndCell" multiplicity="many">
+        <extraparams>
+            <param name="thirdParentUserId" javatype="java.lang.String"/>
+            <param name="thirdChannel" javatype="java.lang.String"/>
+            <param name="cell" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select
+            user_id
+            from
+            cif_user
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select
+			user_id
+			from
+			cif_user t
+			where exists (
+				select m.user_id from cif_third_user_mapping m where  m.third_parent_user_id = #thirdParentUserId#  and m.third_channel = #thirdChannel#
+				  and t.user_id = m.user_id
+			) and  nvl(t.cell, '0') != #cell#
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectUserIdsByCertTypeAndCertNoAndSubdomain" multiplicity="many">
+        <extraparams>
+            <param name="certType" javatype="java.lang.String"/>
+            <param name="certNo" javatype="java.lang.String"/>
+            <param name="subDomain" javatype="java.lang.String"/>
+        </extraparams>
+        <sql>
+            select
+            user_id
+            from
+            cif_user
+            where 1=0
+        </sql>
+        <sqlmap>
+            <![CDATA[
+			select
+			user_id
+			from
+			cif_user
+			where cert_type=#certType# and cert_no=#certNo# and sub_domain=#subDomain#
+			]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="updateUserStatusByUserId">
+        <sql>
+            update cif_user
+            set status=?,
+            gmt_modified=@db@.sysdate
+            where
+            user_id=?
+        </sql>
+    </operation>
+</table>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_platform_config">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_platform_config
+			(platform_type,max_login_count_at_one_time,gmt_create,gmt_modified,session_id_required_when_login)
+			values
+			(?,?,@db@.sysdate,@db@.sysdate,?)
+		</sql>
+	</operation>
+	<operation name="selectAll" multiplicity="many">
+		<sql>
+			select
+			platform_type,max_login_count_at_one_time,gmt_create,gmt_modified,session_id_required_when_login
+			from
+			cif_user_platform_config
+		</sql>
+	</operation>
+	<operation name="selectByMaxGmtModified" multiplicity="many">
+		<sql>
+			select
+			platform_type,max_login_count_at_one_time,gmt_create,gmt_modified,session_id_required_when_login
+			from
+			cif_user_platform_config where gmt_modified &gt; ?
+		</sql>
+	</operation>
+</table>

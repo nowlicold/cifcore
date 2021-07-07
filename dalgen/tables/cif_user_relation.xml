@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="CIF_USER_RELATION" sequence="SEQ_CIF_USER_RELATION">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_relation
+			(id, user_id, other_user_id,
+			relation_type, from_type, status,
+			gmt_create, creator, gmt_modified,
+			modifier, other_user_name)
+			values
+			(?, ?, ?, ?, ?, ?, @db@.sysdate, ?,
+			@db@.sysdate, ?, ?)
+		</sql>
+	</operation>
+
+
+	<operation name="selectByUserIdOtherUserIdRelationType">
+		<sql>
+			select id, user_id, other_user_id, relation_type, from_type,
+			status, gmt_create, creator, gmt_modified, modifier, other_user_name
+			from cif_user_relation where user_id = ? and other_user_id
+			=? and
+			relation_type=?
+		</sql>
+	</operation>
+	
+	<operation name="selectByUserIdOtherUserIdRelationTypeForUpdate">
+		<sql>
+			select id, user_id, other_user_id, relation_type, from_type,
+			status, gmt_create, creator, gmt_modified, modifier, other_user_name
+			from cif_user_relation where user_id = ? and other_user_id
+			=? and
+			relation_type=? for update nowait
+		</sql>
+	</operation>
+
+	<operation name="updateStatusById">
+		<sql>
+			update cif_user_relation set status=?, gmt_modified=@db@.sysdate,
+			modifier=? where
+			id=?
+		</sql>
+	</operation>
+	<operation name="selectByUserId" multiplicity="many">
+		<sql>
+			select id, user_id, other_user_id,
+			other_user_name, relation_type,
+			from_type,
+			status, gmt_create,
+			creator, gmt_modified, modifier from
+			cif_user_relation where user_id=?
+		</sql>
+	</operation>
+	<operation name="selectCount" resultClass="long">
+		<sql>
+			select count(1) from cif_user_relation
+		</sql>
+		<extraparams>
+			<param name="status" javatype="java.lang.String"/>
+			<param name="relationType" javatype="java.lang.String"/>
+			<param name="fromType" javatype="java.lang.String"/>
+			<param name="listUserId" javatype="java.util.List"/>
+			<param name="listOtherUserId" javatype="java.util.List"/>
+		</extraparams>
+		<sqlmap>
+			<![CDATA[
+    			    ${cdata-start}
+                    	select count(1) from cif_user_relation
+    			    ${cdata-end}
+					    <where>
+					    		<if test="status != null and status != ''">
+	     			          ${cdata-start}
+							    	and status=#status#
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="relationType != null and relationType != ''">
+	     			          ${cdata-start}
+							    	and relation_type=#relationType#
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="fromType != null and fromType != ''">
+	     			          ${cdata-start}
+							    	and from_type=#fromType#
+	                    	  ${cdata-end}
+                            </if>
+                             <if test="listUserId != null and listUserId.isEmpty()">
+							  and
+													    <foreach open="user_id in (" close=")" separator="," collection="listUserId" item="item">
+									 						#listUserId[]#
+													    </foreach>
+                            </if>
+                            <if test="listOtherUserId != null and listOtherUserId.isEmpty()">
+							  and
+													    <foreach open="other_user_id in (" close=")" separator="," collection="listOtherUserId" item="item">
+									 						#listOtherUserId[]#
+													    </foreach>
+                            </if>
+                           
+                         </where>	
+		    			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="selectCountWithGroupBy" multiplicity="many" resultClass="java.util.HashMap">
+		<sql>
+			select count('countField') as count_value,'groupField' as
+			count_key from cif_user_relation
+		</sql>
+		<extraparams>
+			<param name="countField" javatype="java.lang.String"/>
+			<param name="groupField" javatype="java.lang.String"/>
+			<param name="status" javatype="java.lang.String"/>
+			<param name="relationType" javatype="java.lang.String"/>
+			<param name="fromType" javatype="java.lang.String"/>
+			<param name="listUserId" javatype="java.util.List"/>
+			<param name="listOtherUserId" javatype="java.util.List"/>
+		</extraparams>
+		<sqlmap>
+			<![CDATA[
+    			    ${cdata-start}
+                    	select count(#countField#) as count_value,$groupField$ as count_key from cif_user_relation
+    			    ${cdata-end}
+					    <where>
+					    		<if test="status != null and status != ''">
+	     			          ${cdata-start}
+							    	and status=#status#
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="relationType != null and relationType != ''">
+	     			          ${cdata-start}
+							    	and relation_type=#relationType#
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="fromType != null and fromType != ''">
+	     			          ${cdata-start}
+							    	and from_type=#fromType#
+	                    	  ${cdata-end}
+                            </if>
+                             <if test="listUserId != null and listUserId.isEmpty()">
+							  and
+													    <foreach open="user_id in (" close=")" separator="," collection="listUserId" item="item">
+									 						#listUserId[]#
+													    </foreach>
+                            </if>
+                            <if test="listOtherUserId != null and listOtherUserId.isEmpty()">
+							  and
+													    <foreach open="other_user_id in (" close=")" separator="," collection="listOtherUserId" item="item">
+									 						#listOtherUserId[]#
+													    </foreach>
+                            </if>
+                         </where>	
+                         	
+		    			]]>
+		<if test="groupField != null and groupField != ''">
+						     			          ${cdata-start}
+												    	$groupField$
+						                    	  ${cdata-end}
+	                         </if></sqlmap>
+	</operation>
+	<!-- 查询某一些字段 -->
+	<operation name="selectPart" multiplicity="many" resultClass="java.util.HashMap" remapResults="true" paging="true">
+		<sql>
+			select id from cif_user_relation
+		</sql>
+		<extraparams>
+			<param name="queryFiled" javatype="java.lang.String"/>
+			<param name="status" javatype="java.lang.String"/>
+			<param name="relationType" javatype="java.lang.String"/>
+			<param name="fromType" javatype="java.lang.String"/>
+			<param name="listUserId" javatype="java.util.List"/>
+			<param name="listOtherUserId" javatype="java.util.List"/>
+		</extraparams>
+		<sqlmap>
+			<![CDATA[
+    			    ${cdata-start}
+                     select  $queryFiled$ from cif_user_relation 
+    			    ${cdata-end}
+					    <where>
+					    		<if test="status != null and status != ''">
+	     			          ${cdata-start}
+							    	and status=#status#
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="relationType != null and relationType != ''">
+	     			          ${cdata-start}
+							    	and relation_type=#relationType#
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="fromType != null and fromType != ''">
+	     			          ${cdata-start}
+							    	and from_type=#fromType#
+	                    	  ${cdata-end}
+                            </if>
+                             <if test="listUserId != null and listUserId.isEmpty()">
+							  and
+													    <foreach open="user_id in (" close=")" separator="," collection="listUserId" item="item">
+									 						#listUserId[]#
+													    </foreach>
+                            </if>
+                            <if test="listOtherUserId != null and listOtherUserId.isEmpty()">
+							  and
+													    <foreach open="other_user_id in (" close=")" separator="," collection="listOtherUserId" item="item">
+									 						#listOtherUserId[]#
+													    </foreach>
+                            </if>
+                        </where>	
+		    			]]>
+		</sqlmap>
+	</operation>
+
+	<!-- 搜索 -->
+	<operation name="search" multiplicity="many" paging="true">
+		<sql>
+			select id, user_id, other_user_id, relation_type, from_type,
+			status, gmt_create, creator, gmt_modified, modifier, other_user_name
+			from cif_user_relation
+		</sql>
+		<extraparams>
+			<param name="status" javatype="java.lang.String"/>
+			<param name="relationType" javatype="java.lang.String"/>
+			<param name="fromType" javatype="java.lang.String"/>
+			<param name="listUserId" javatype="java.util.List"/>
+			<param name="listOtherUserId" javatype="java.util.List"/>
+		</extraparams>
+		<sqlmap>
+			<![CDATA[
+    			    ${cdata-start}
+                    select id, user_id, other_user_id, relation_type, from_type, status, gmt_create, creator, gmt_modified, modifier, other_user_name from cif_user_relation
+    			    ${cdata-end}
+					    <where>
+					    		<if test="status != null and status != ''">
+	     			          ${cdata-start}
+							    	and status=#status#
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="relationType != null and relationType != ''">
+	     			          ${cdata-start}
+							    	and relation_type=#relationType#
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="fromType != null and fromType != ''">
+	     			          ${cdata-start}
+							    	and from_type=#fromType#
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="listUserId != null and listUserId.isEmpty()">
+							  and
+													    <foreach open="user_id in (" close=")" separator="," collection="listUserId" item="item">
+									 						#listUserId[]#
+													    </foreach>
+                            </if>
+                            <if test="listOtherUserId != null and listOtherUserId.isEmpty()">
+							  and
+													    <foreach open="other_user_id in (" close=")" separator="," collection="listOtherUserId" item="item">
+									 						#listOtherUserId[]#
+													    </foreach>
+                            </if>
+                           
+                         </where>	
+		    			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectByOtherUserId" multiplicity="many">
+		<sql>
+			select id, user_id, other_user_id,
+			other_user_name, relation_type,
+			from_type,
+			status, gmt_create,
+			creator, gmt_modified, modifier from
+			cif_user_relation where other_user_id=?
+		</sql>
+	</operation>
+
+	<operation name="selectById">
+		<sql>
+			select id, user_id, other_user_id,
+			other_user_name, relation_type,
+			from_type,
+			status, gmt_create,
+			creator, gmt_modified, modifier from
+			cif_user_relation where id=?
+		</sql>
+	</operation>
+
+
+</table>

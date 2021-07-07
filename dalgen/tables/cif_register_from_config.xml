@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_register_from_config">
+	<operation name="insert">
+		<sql>
+			insert into cif_register_from_config
+			(id, from_user_id,
+			from_type_code,
+			special_properties, gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from)
+			values
+			(?, ?,
+			?, ?,
+			@db@.sysdate,
+			@db@.sysdate,?,?,?,?,?,?)
+		</sql>
+	</operation>
+	<operation name="selectById">
+		<sql>
+			select id, from_user_id, from_type_code,
+			special_properties,
+			gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from
+			from
+			cif_register_from_config
+			where
+			id=?
+		</sql>
+	</operation>
+	<operation name="selectEnabledByFromUserId" multiplicity="many">
+		<extraparams>
+			<param name="fromUserId" javatype="java.lang.String"/>
+			<param name="enabled" javatype="java.lang.Boolean"/>
+		</extraparams>
+		<sql>
+			select id, from_user_id, from_type_code,
+			special_properties,
+			gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from
+			from
+			cif_register_from_config where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, from_user_id, from_type_code,
+			special_properties,
+			gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from
+			from
+			cif_register_from_config where from_user_id=#fromUserId#
+			<if test="enabled != null">
+				and enabled=#enabled#
+			</if>
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectDefaultByFromUserId">
+		<sql>
+			select id, from_user_id, from_type_code,
+			special_properties,
+			gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from
+			from
+			cif_register_from_config where from_user_id=? and
+			default_from=1
+			and enabled=1
+		</sql>
+	</operation>
+	<operation name="selectDefaultByFromUserLoginName">
+		<extraparams>
+			<param name="loginName" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select id, from_user_id, from_type_code,
+			special_properties,
+			gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from
+			from
+			cif_register_from_config where 1=0
+		</sql>
+		<sqlmap>
+			select id, from_user_id, from_type_code,
+			special_properties,
+			gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from
+			from
+			cif_register_from_config where
+			default_from=1
+			and enabled=1 and
+			from_user_id in
+			(select user_id from cif_user where
+			login_name=#loginName#)
+		</sqlmap>
+	</operation>
+	<operation name="selectEnabledByDomainNames" multiplicity="many">
+		<extraparams>
+			<param name="domainNames" javatype="java.util.List"/>
+			<param name="enabled" javatype="java.lang.Boolean"/>
+		</extraparams>
+		<sql>
+			select id, from_user_id, from_type_code,
+			special_properties,
+			gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from
+			from
+			cif_register_from_config
+			where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, from_user_id, from_type_code,
+			special_properties,
+			gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from
+			from
+			cif_register_from_config where enabled=1 and id in
+			(select
+			register_from_config_id from cif_register_from_cfg_domain where
+			domain_name in
+			<foreach open="(" close=")" separator="," collection="domainNames" item="item"> 
+					#domainNames[]# 
+			</foreach>
+			<if test="enabled != null">
+				and enabled=#enabled#
+			</if>
+			)
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectEnabledByFromCode">
+		<extraparams>
+			<param name="fromCode" javatype="java.lang.String"/>
+			<param name="enabled" javatype="java.lang.Boolean"/>
+		</extraparams>
+		<sql>
+			select id, from_user_id, from_type_code,
+			special_properties,
+			gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from
+			from
+			cif_register_from_config
+			where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, from_user_id, from_type_code,
+			special_properties,
+			gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from
+			from
+			cif_register_from_config where from_code=#fromCode#
+			<if test="enabled != null">
+				and enabled=#enabled#
+			</if>
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectEnabledByFromUserIdAndFromTypeCode">
+		<extraparams>
+			<param name="fromUserId" javatype="java.lang.String"/>
+			<param name="fromTypeCode" javatype="java.lang.String"/>
+			<param name="enabled" javatype="java.lang.Boolean"/>
+		</extraparams>
+		<sql>
+			select id, from_user_id, from_type_code,
+			special_properties,
+			gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from
+			from
+			cif_register_from_config
+			where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, from_user_id, from_type_code,
+			special_properties,
+			gmt_create,
+			gmt_modified,creater,modifier,FROM_CODE,from_USER_HAS_WEBSITE,enabled,default_from
+			from
+			cif_register_from_config where from_user_id=#fromUserId# and from_type_code=#fromTypeCode#
+			<if test="enabled != null">
+				and enabled=#enabled#
+			</if>
+			]]>
+		</sqlmap>
+	</operation>
+</table>

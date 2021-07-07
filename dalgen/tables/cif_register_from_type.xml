@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_register_from_type">
+	<operation name="insert">
+		<sql>insert into cif_register_from_type
+			(code, name, gmt_create,
+			gmt_modified, enabled,properties)
+			values(?, ?,
+			@db@.sysdate,@db@.sysdate, ?,?)
+		</sql>
+	</operation>
+	<operation name="selectByCode">
+		<sql>
+			select code, name, gmt_create,
+			gmt_modified, enabled,properties
+			from
+			cif_register_from_type where code=?
+		</sql>
+	</operation>
+</table>

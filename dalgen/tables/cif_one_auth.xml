@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_one_auth">
+	<operation name="insert">
+		<sql>insert into cif_one_auth
+			(one_auth_id,auth_name,auth_name_type,gmt_create,gmt_modified,cell,cell_validate,domain,
+			sub_domain,default_user_id,login_password,can_login,account_password,real_name,email,qq,
+			cert_type,cert_no,email_validate,qq_validate,gmt_change_identity,sex,birthday)
+			values
+			(?,?,?,@db@.sysdate,@db@.sysdate,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+		</sql>
+	</operation>
+	<operation name="selectByAuthName">
+		<sql>
+			select
+			one_auth_id,auth_name,auth_name_type,gmt_create,gmt_modified,cell,cell_validate,domain,
+			sub_domain,default_user_id,login_password,can_login,account_password,real_name,email,qq,
+			cert_type,cert_no,email_validate,qq_validate,gmt_change_identity,sex,birthday
+			from
+			cif_one_auth where
+			auth_name=?
+		</sql>
+	</operation>
+	<operation name="selectByOneAuthId">
+		<sql>
+			select
+			one_auth_id,auth_name,auth_name_type,gmt_create,gmt_modified,cell,cell_validate,domain,
+			sub_domain,default_user_id,login_password,can_login,account_password,real_name,email,qq,
+			cert_type,cert_no,email_validate,qq_validate,gmt_change_identity,sex,birthday
+			from
+			cif_one_auth where
+			one_auth_id=?
+		</sql>
+	</operation>
+	<operation name="selectByOneAuthIds" multiplicity="many">
+		<extraparams>
+			<param name="oneAuthIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select
+			one_auth_id,auth_name,auth_name_type,gmt_create,gmt_modified,cell,cell_validate,domain,
+			sub_domain,default_user_id,login_password,can_login,account_password,real_name,email,qq,
+			cert_type,cert_no,email_validate,qq_validate,gmt_change_identity,sex,birthday
+			from
+			cif_one_auth where
+			1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				select
+				one_auth_id,auth_name,auth_name_type,gmt_create,gmt_modified,cell,cell_validate,domain,
+				sub_domain,default_user_id,login_password,can_login,account_password,real_name,email,qq,
+				cert_type,cert_no,email_validate,qq_validate,gmt_change_identity,sex,birthday
+				from
+				cif_one_auth where
+				<foreach open=" one_auth_id in (" close=")" separator="," collection="oneAuthIds" item="item">
+					#oneAuthIds[]#
+				</foreach>
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectByCertTypeAndCertNoAndRealName" multiplicity="many">
+		<extraparams>
+			<param name="certType" javatype="java.lang.String"/>
+			<param name="certNo" javatype="java.lang.String"/>
+			<param name="realName" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select
+			one_auth_id,auth_name,auth_name_type,gmt_create,gmt_modified,cell,cell_validate,domain,
+			sub_domain,default_user_id,login_password,can_login,account_password,real_name,email,qq,
+			cert_type,cert_no,email_validate,qq_validate,gmt_change_identity,sex,birthday
+			from
+			cif_one_auth where
+			1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				select
+				one_auth_id,auth_name,auth_name_type,gmt_create,gmt_modified,cell,cell_validate,domain,
+				sub_domain,default_user_id,login_password,can_login,account_password,real_name,email,qq,
+				cert_type,cert_no,email_validate,qq_validate,gmt_change_identity,sex,birthday
+				from
+				cif_one_auth
+				<where>
+					<if test="certNo != null and certNo != ''">
+						and cert_no=#certNo#
+                    </if>
+                    <if test="certType != null and certType != ''">
+						and cert_type=#certType#
+                    </if>
+                    <if test="realName != null and realName != ''">
+						and real_name=#realName#
+                    </if>
+				</where>
+			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="updateDefaultUserId">
+		<sql>
+			update cif_one_auth set
+			gmt_modified=@db@.sysdate,default_user_id=?
+			where
+			one_auth_id=?
+		</sql>
+	</operation>
+
+	<operation name="updateValidatedCell">
+		<sql>
+			update cif_one_auth set
+			gmt_modified=@db@.sysdate,cell=?,cell_validate=?
+			where
+			one_auth_id=?
+		</sql>
+	</operation>
+	<operation name="updateAuthName">
+		<sql>
+			update cif_one_auth set
+			gmt_modified=@db@.sysdate,auth_name=?
+			where
+			one_auth_id=?
+		</sql>
+	</operation>
+	<!-- 更新登陆密码 -->
+	<operation name="updateLoginPassword">
+		<sql>
+			update cif_one_auth set
+			login_password=?,gmt_modified=@db@.sysdate
+			where
+			one_auth_id=?
+		</sql>
+	</operation>
+	<operation name="updateCanLogin">
+		<sql>
+			update cif_one_auth set
+			can_login=?,gmt_modified=@db@.sysdate
+			where
+			one_auth_id=?
+		</sql>
+	</operation>
+	<operation name="updateIdentify">
+		<extraparams>
+			<param name="realName" javatype="java.lang.String"/>
+			<param name="certNo" javatype="java.lang.String"/>
+			<param name="certType" javatype="java.lang.String"/>
+			<param name="oneAuthId" javatype="java.lang.String"/>
+			<param name="gmtChangeIdentity" javatype="java.util.Date"/>
+		</extraparams>
+		<sql>
+			update cif_one_auth set gmt_modified=@db@.sysdate where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			update cif_one_auth set gmt_modified=@db@.sysdate 
+			<if test="gmtChangeIdentity != null">
+				,gmt_change_identity=#gmtChangeIdentity#
+			</if>
+			<if test="realName != null and realName != ''">
+				,real_name=#realName#
+			</if>
+			<if test="certNo != null and certNo != ''">
+				,cert_no=#certNo#
+			</if>
+			<if test="certType != null and certType != ''">
+				,cert_type=#certType#
+			</if> 
+			where one_auth_id=#oneAuthId#
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="search" multiplicity="many" paging="true">
+		<extraparams>
+			<param name="oneAuthId" javatype="java.lang.String"/>
+			<param name="authName" javatype="java.lang.String"/>
+			<param name="authNameType" javatype="java.lang.String"/>
+			<param name="email" javatype="java.lang.String"/>
+			<param name="qq" javatype="java.lang.String"/>
+			<param name="cell" javatype="java.lang.String"/>
+			<param name="certNo" javatype="java.lang.String"/>
+			<param name="beginCreateDate" javatype="java.util.Date"/>
+			<param name="endCreateDate" javatype="java.util.Date"/>
+			<param name="orderBy" javatype="java.lang.String"/>
+			<param name="domain" javatype="java.lang.String"/>
+			<param name="subDomain" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select
+			one_auth_id,auth_name,auth_name_type,gmt_create,gmt_modified,cell,cell_validate,domain,
+			sub_domain,default_user_id,login_password,can_login,account_password,real_name,email,qq,
+			cert_type,cert_no,email_validate,qq_validate,gmt_change_identity,sex,birthday
+			from
+			cif_one_auth where
+			1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				select
+				one_auth_id,auth_name,auth_name_type,gmt_create,gmt_modified,cell,cell_validate,domain,
+				sub_domain,default_user_id,login_password,can_login,account_password,real_name,email,qq,
+				cert_type,cert_no,email_validate,qq_validate,gmt_change_identity,sex,birthday
+				from
+				cif_one_auth
+			 	<where>
+					<if test="oneAuthId != null and oneAuthId != ''">
+						and one_auth_id=#oneAuthId#
+                    </if>
+					<if test="authName != null and authName != ''">
+						and auth_name=#authName#
+                    </if>
+					<if test="authNameType != null and authNameType != ''">
+						and auth_name_type=#authNameType#
+                    </if>
+					<if test="email != null and email != ''">
+						and email=#email#
+                    </if>
+					<if test="qq != null and qq != ''">
+						and qq=#qq#
+                    </if>
+					<if test="cell != null and cell != ''">
+						and cell=#cell#
+                    </if>
+					<if test="certNo != null and certNo != ''">
+						and cert_no=#certNo#
+                    </if>
+                    <if test="beginCreateDate != null">
+                    	${cdata-start}
+							and gmt_create >= #beginCreateDate#
+						${cdata-end}
+                    </if>
+                    <if test="endCreateDate != null">
+                    	${cdata-start}
+							and gmt_create <= #endCreateDate#
+						${cdata-end}
+                    </if>
+					<if test="domain != null and domain != ''">
+						and domain=#domain#
+                    </if>
+					<if test="subDomain != null and subDomain != ''">
+						and sub_domain=#subDomain#
+                    </if>
+			 	</where>
+			 	
+			]]>
+		<if test="orderBy != null and orderBy != ''">
+		     			${cdata-start}
+							order by $orderBy$
+		                ${cdata-end}
+	                </if></sqlmap>
+	</operation>
+</table>

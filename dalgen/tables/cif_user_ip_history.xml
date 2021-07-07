@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_ip_history">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_ip_history
+			(id, user_id, ip, gmt_create, gmt_modified, gmt_his_create)
+			values
+			(?, ?, ?, ?, ?, @db@.sysdate);
+
+		</sql>
+	</operation>
+
+	<operation name="selectByUserId" multiplicity="many">
+		<sql>
+			select id, user_id, ip, gmt_create, gmt_modified, gmt_his_create from cif_user_ip_history
+			where
+			user_id =
+			?
+		</sql>
+	</operation>
+
+
+
+</table>

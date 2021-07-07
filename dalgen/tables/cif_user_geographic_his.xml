@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_user_geographic_his">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_geographic_his
+			(id, user_id, longitude,
+			latitude, gmt_create, gmt_modified, gmt_history)
+			values
+			(?,
+			?, ?, ?, ?,
+			?,
+			@db@.sysdate);
+
+		</sql>
+	</operation>
+
+	<operation name="selectByUserId" multiplicity="many">
+		<sql>
+			select id, user_id, longitude, latitude, gmt_create,
+			gmt_modified, gmt_history from cif_user_geographic_his
+			where
+			user_id =
+			?
+		</sql>
+	</operation>
+
+
+
+</table>

@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="CIF_THIRD_USER_MAPPING" sequence="SEQ_CIF_THIRD_USER_MAPPING">
+	<operation name="insert">
+		<sql>
+			insert into cif_third_user_mapping
+			(id, third_user_id,
+			third_channel, third_login_name, third_user_name,
+			properties,user_id,
+			gmt_create,
+			gmt_modified,domain,third_parent_user_id,unique_id)
+			values
+			(?,?,?,?,?,?,?,@db@.sysdate,@db@.sysdate,?,?,?)
+		</sql>
+	</operation>
+	<operation name="selectByUserId" multiplicity="many">
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,
+			gmt_create,
+			gmt_modified,domain,user_id,third_parent_user_id,unique_id
+			from
+			cif_third_user_mapping
+			where user_id=?
+		</sql>
+	</operation>
+	<operation name="selectByIdForUpdate">
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,
+			gmt_create,
+			gmt_modified,domain,user_id,third_parent_user_id,unique_id
+			from
+			cif_third_user_mapping
+			where id=? for update nowait
+		</sql>
+	</operation>
+	<operation name="selectByThirdChannelAndUserId" multiplicity="many">
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,
+			gmt_create,
+			gmt_modified,domain,user_id,third_parent_user_id,unique_id
+			from
+			cif_third_user_mapping
+			where third_channel=? and user_id=?
+		</sql>
+	</operation>
+	<operation name="selectByThirdChannelsAndUserId" multiplicity="many">
+		<extraparams>
+			<param name="thirdChannels" javatype="java.util.List"/>
+			<param name="userId" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name, third_user_name,
+			properties,user_id,
+			gmt_create,
+			gmt_modified,domain,third_parent_user_id,unique_id 
+			from cif_third_user_mapping where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, third_user_id,
+			third_channel, third_login_name, third_user_name,
+			properties,user_id,
+			gmt_create,
+			gmt_modified,domain,third_parent_user_id,unique_id 
+			from cif_third_user_mapping
+			where user_id=#userId# and third_channel in
+			<foreach open="(" close=")" separator="," collection="thirdChannels" item="item">
+				#thirdChannels[]#
+			</foreach>	
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectThirdUserIdsByThirdChannelsAndUserId" multiplicity="many" resultClass="java.util.HashMap">
+		<extraparams>
+			<param name="thirdChannels" javatype="java.util.List"/>
+			<param name="userId" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select third_channel, third_user_id 
+			from cif_third_user_mapping where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select third_channel, third_user_id 
+			from cif_third_user_mapping
+			where user_id=#userId# and third_channel in
+			<foreach open="(" close=")" separator="," collection="thirdChannels" item="item">
+				#thirdChannels[]#
+			</foreach>	
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectByThirdChannelThirdParentUserIdAndDomain" multiplicity="many">
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,
+			gmt_create,
+			gmt_modified,domain,user_id,third_parent_user_id,unique_id
+			from
+			cif_third_user_mapping
+			where third_channel=? and
+			third_parent_user_id=? and domain=?
+		</sql>
+	</operation>
+	<operation name="selectThirdUserIdByThirdChannelAndUserId" multiplicity="many">
+		<sql>
+			select third_user_id from
+			cif_third_user_mapping where
+			third_channel=? and user_id=?
+		</sql>
+	</operation>
+	<operation name="selectThirdParentUserIdByThirdChannelAndUserId" multiplicity="many">
+		<sql>
+			select third_parent_user_id from
+			cif_third_user_mapping where
+			third_channel=? and user_id=?
+		</sql>
+	</operation>
+
+	<operation name="selectByThirdChannelThirdUserIdAndDomainAndUserId">
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,
+			gmt_create,
+			gmt_modified,domain,user_id,third_parent_user_id,unique_id
+			from
+			cif_third_user_mapping
+			where third_channel=? and third_user_id=? and
+			domain=? and user_id=?
+		</sql>
+	</operation>
+
+	<operation name="selectUserIdByThirdChannelThirdUserIdAndDomain" multiplicity="many">
+		<sql>
+			select user_id from
+			cif_third_user_mapping where third_channel=?
+			and third_user_id=? and domain=?
+		</sql>
+	</operation>
+
+	<operation name="selectByThirdChannelThirdUserIdAndDomain" multiplicity="many">
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,
+			gmt_create,
+			gmt_modified,domain,user_id,third_parent_user_id,unique_id
+			from
+			cif_third_user_mapping
+			where third_channel=?
+			and third_user_id=? and domain=?
+		</sql>
+	</operation>
+
+	<operation name="selectByThirdChannelThirdUserIdsAndDomain" multiplicity="many">
+		<extraparams>
+			<param name="thirdChannel" javatype="java.lang.String"/>
+			<param name="thirdUserIds" javatype="java.util.List"/>
+			<param name="domain" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,
+			gmt_create,
+			gmt_modified,domain,user_id,third_parent_user_id,unique_id
+			from
+			cif_third_user_mapping
+			where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,
+			gmt_create, gmt_modified,domain,user_id,third_parent_user_id,unique_id from
+			cif_third_user_mapping where domain=#domain# and third_channel=#thirdChannel#  and third_user_id in
+			<foreach open="(" close=")" separator="," collection="thirdUserIds" item="item">
+				#thirdUserIds[]#
+			</foreach>	
+			]]>
+
+		</sqlmap>
+	</operation>
+	<operation name="selectUserIdsByThirdChannelThirdUserIdsAndDomain" multiplicity="many">
+		<extraparams>
+			<param name="thirdChannel" javatype="java.lang.String"/>
+			<param name="thirdUserIds" javatype="java.util.List"/>
+			<param name="domain" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select user_id from
+			cif_third_user_mapping where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select  user_id from
+			cif_third_user_mapping where domain=#domain# and third_channel=#thirdChannel# and third_user_id in
+			<foreach open="(" close=")" separator="," collection="thirdUserIds" item="item">
+				#thirdUserIds[]#
+			</foreach>	
+			]]>
+
+
+		</sqlmap>
+	</operation>
+	<operation name="selectThirdUserIdWithUserIdByThirdChannelThirdUserIdsAndDomain" multiplicity="many" resultClass="java.util.HashMap">
+		<extraparams>
+			<param name="thirdChannel" javatype="java.lang.String"/>
+			<param name="thirdUserIds" javatype="java.util.List"/>
+			<param name="domain" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select third_user_id, user_id from
+			cif_third_user_mapping where
+			1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select  third_user_id, user_id from
+			cif_third_user_mapping where domain=#domain# and third_channel=#thirdChannel# and third_user_id  in
+			<foreach open="(" close=")" separator="," collection="thirdUserIds" item="item">
+				#thirdUserIds[]#
+			</foreach>
+			]]>
+
+		</sqlmap>
+	</operation>
+	<operation name="selectCountByThirdChannelThirdUserIdAndDomainAndUserId">
+		<sql>
+			select count(*) from
+			cif_third_user_mapping where third_channel=?
+			and third_user_id=? and domain=? and user_id=?
+		</sql>
+	</operation>
+	<operation name="selectCountByUserId">
+		<sql>
+			select count(*) from
+			cif_third_user_mapping where user_id=?
+		</sql>
+	</operation>
+
+	<operation name="selectUserIdThirdUserIdByThirdChannelAndUserIds" multiplicity="many" resultClass="java.util.HashMap">
+		<extraparams>
+			<param name="thirdChannel" javatype="java.lang.String"/>
+			<param name="userIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select third_user_id, user_id from
+			cif_third_user_mapping where
+			1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select  third_user_id, user_id from
+			cif_third_user_mapping where third_channel=#thirdChannel#  and user_id in
+			<foreach open="(" close=")" separator="," collection="userIds" item="item">
+				#userIds[]#
+			</foreach>
+			]]>
+
+		</sqlmap>
+	</operation>
+
+	<operation name="selectUserIdsByThirdChannelThirdUserIds" multiplicity="many">
+		<extraparams>
+			<param name="thirdChannel" javatype="java.lang.String"/>
+			<param name="thirdUserIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select user_id from
+			cif_third_user_mapping where
+			1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select user_id from
+			cif_third_user_mapping where third_channel=#thirdChannel#  and third_user_id in
+			<foreach open="(" close=")" separator="," collection="thirdUserIds" item="item">
+				#thirdUserIds[]#
+			</foreach>
+			]]>
+		</sqlmap>
+	</operation>
+
+	<extraparams name="searchParameters">
+		<param name="id" javatype="long"/>
+		<param name="userId" javatype="java.lang.String"/>
+		<param name="thirdUserId" javatype="java.lang.String"/>
+		<param name="thirdChannel" javatype="java.lang.String"/>
+		<param name="thirdUserName" javatype="java.lang.String"/>
+		<param name="thirdLoginName" javatype="java.lang.String"/>
+		<param name="thirdParentUserId" javatype="java.lang.String"/>
+	</extraparams>
+	<sql name="searchWhereSql">
+		<![CDATA[
+			<where>
+				<if test="id == 0">
+					and id=#id#
+                </if>
+                <if test="userId != null and userId != ''">
+					and user_id=#userId#
+                </if>   
+                <if test="thirdChannel != null and thirdChannel != ''">
+					and third_channel=#thirdChannel#
+                </if>  
+                <if test="thirdUserName != null and thirdUserName != ''">
+					and third_user_name=#thirdUserName#
+                </if>    
+                 <if test="thirdUserId != null and thirdUserId != ''">
+					and third_user_id=#thirdUserId#
+                </if>
+                <if test="thirdLoginName != null and thirdLoginName != ''">
+					and third_login_name=#thirdLoginName#
+                </if>       
+                <if test="thirdParentUserId != null and thirdParentUserId != ''">
+					and third_parent_user_id=#thirdParentUserId#
+                </if>
+           </where> 
+		]]>
+	</sql>
+
+	<operation name="select" multiplicity="many" paging="true">
+		<extraparams>
+			<param ref="searchParameters"/>
+		</extraparams>
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name, properties,
+			gmt_create,
+			gmt_modified,domain,user_id,third_parent_user_id,unique_id
+			from
+			cif_third_user_mapping
+			where 1=0
+		</sql>
+		<sqlmap>
+				<![CDATA[ 
+           	select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name, properties,
+			gmt_create, gmt_modified,domain,user_id,third_parent_user_id,unique_id from
+			cif_third_user_mapping
+			<include refid="searchWhereSql"/>
+			order by id desc
+    			]]>
+		</sqlmap>
+	</operation>
+
+
+	<operation name="selectByUserIds" multiplicity="many">
+		<extraparams>
+			<param name="userIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,
+			gmt_create,
+			gmt_modified,domain,user_id,third_parent_user_id,unique_id
+			from
+			cif_third_user_mapping
+			where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,
+			gmt_create, gmt_modified,domain,user_id,third_parent_user_id,unique_id from
+			cif_third_user_mapping where  user_id in
+			<foreach open="(" close=")" separator="," collection="userIds" item="item">
+				#userIds[]#
+			</foreach>	
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectUserIdsByThirdChannelThirdParentUserIdAndDomain" multiplicity="many">
+		<sql>
+			select user_id
+			from
+			cif_third_user_mapping where third_channel=?
+			and
+			third_parent_user_id=? and domain=?
+		</sql>
+	</operation>
+	<operation name="updateThirdLoginNameByThirdChannelAndThirdUserId">
+		<sql>
+			update cif_third_user_mapping set
+			third_login_name=?,gmt_modified=@db@.sysdate
+			where third_channel=?
+			and
+			third_user_id=?
+		</sql>
+	</operation>
+	<operation name="updateThirdParentUserIdById">
+		<sql>
+			update cif_third_user_mapping set third_parent_user_id=? , gmt_modified=@db@.sysdate where id=?
+		</sql>
+	</operation>
+	<operation name="selectDistinctThirdParentUserIdsByThirdChannelAndUserIds" multiplicity="many">
+		<extraparams>
+			<param name="thirdChannel" javatype="java.lang.String"/>
+			<param name="userIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select third_parent_user_id
+			from
+			cif_third_user_mapping where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select
+			 distinct third_parent_user_id  from
+			cif_third_user_mapping where third_channel=#thirdChannel# and   user_id in
+			<foreach open="(" close=")" separator="," collection="userIds" item="item">
+				#userIds[]#
+			</foreach>	
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectByThirdChannelAndUserIds" multiplicity="many">
+		<extraparams>
+			<param name="thirdChannel" javatype="java.lang.String"/>
+			<param name="userIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,
+			gmt_create,
+			gmt_modified,domain,user_id,third_parent_user_id,unique_id
+			from
+			cif_third_user_mapping where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,
+			gmt_create,
+			gmt_modified,domain,user_id,third_parent_user_id,unique_id
+			from
+			cif_third_user_mapping where third_channel=#thirdChannel# and   user_id in
+			<foreach open="(" close=")" separator="," collection="userIds" item="item">
+				#userIds[]#
+			</foreach>	
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectDistinctThirdParentUserIdsByThirdChannelUserIdsAndDomain" multiplicity="many">
+		<extraparams>
+			<param name="thirdChannel" javatype="java.lang.String"/>
+			<param name="userIds" javatype="java.util.List"/>
+			<param name="domain" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select third_parent_user_id
+			from
+			cif_third_user_mapping where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			select
+			 distinct third_parent_user_id  from
+			cif_third_user_mapping where domain=#domain# and third_channel=#thirdChannel# and   user_id in
+			<foreach open="(" close=")" separator="," collection="userIds" item="item">
+				#userIds[]#
+			</foreach>	
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectUserIdsWithSameThirdParentUserIdByUserIdAndDomain" multiplicity="many">
+		<extraparams>
+			<param name="userId" javatype="java.lang.String"/>
+			<param name="domain" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select user_id
+			from cif_third_user_mapping
+			where 1=0
+		</sql>
+		<sqlmap>
+			select t.user_id
+			from cif_third_user_mapping t
+			where
+			t.third_parent_user_id =
+			(select m.third_parent_user_id
+			from
+			cif_third_user_mapping m
+			where m.user_id = #userId#)
+			and t.domain =
+			#domain#
+		</sqlmap>
+	</operation>
+
+	<operation name="selectByThirdChannelThirdUserIdAndDomainAndUserIdForUpdate">
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,user_id,
+			gmt_create,
+			gmt_modified,domain,third_parent_user_id,unique_id from
+			cif_third_user_mapping where third_channel=?
+			and third_user_id=? and
+			domain=? and user_id=? for update nowait
+		</sql>
+	</operation>
+
+	<operation name="deleteById">
+		<sql>
+			delete from
+			cif_third_user_mapping where id = ?
+		</sql>
+	</operation>
+
+	<operation name="selectById">
+		<sql>
+			select id, third_user_id,
+			third_channel, third_login_name,
+			third_user_name,
+			properties,user_id,
+			gmt_create,
+			gmt_modified,domain,third_parent_user_id,unique_id from
+			cif_third_user_mapping
+			where id=?
+		</sql>
+	</operation>
+</table>

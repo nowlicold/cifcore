@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="CIF_SYSTEM_LOGO" sequence="SEQ_CIF_SYSTEM_LOGO">
+	<operation name="insert">
+		<sql>
+			insert into cif_system_logo
+			(id, file_name, code, name,
+			gmt_create, gmt_modified,modifier,
+			group_id,order_number,enabled, image_resource_id)
+			values
+			(?, ?, ?, ?,
+			@db@.sysdate,@db@.sysdate, ?,
+			?,?,? , ?)
+		</sql>
+	</operation>
+
+	<operation name="selectById">
+		<sql>
+			select id, file_name, code, name,
+			gmt_create,
+			gmt_modified,modifier,
+			group_id,order_number,enabled, image_resource_id
+			from
+			cif_system_logo
+			where id=?
+		</sql>
+	</operation>
+	<operation name="selectGmtModifiedById">
+		<sql>
+			select gmt_modified from
+			cif_system_logo
+			where id=?
+		</sql>
+	</operation>
+	<operation name="selectAll" multiplicity="many">
+		<sql>
+			select id, file_name, code, name,
+			gmt_create,
+			gmt_modified,modifier,
+			group_id,order_number,enabled, image_resource_id
+			from
+			cif_system_logo
+		</sql>
+	</operation>
+
+	<operation name="selectAllEnabledSystemIds" multiplicity="many">
+		<sql>
+			select id
+			from cif_system_logo
+			where enabled=1 order by
+			order_number desc
+		</sql>
+	</operation>
+
+	<operation name="selectIdByName">
+		<sql>
+			select id
+			from cif_system_logo
+			where name=?
+		</sql>
+	</operation>
+
+	<operation name="selectIdByFileName">
+		<sql>
+			select id
+			from cif_system_logo
+			where file_name=?
+		</sql>
+	</operation>
+
+	<operation name="selectEnabledSystemIdsByGroupId" multiplicity="many">
+		<sql>
+			select id
+			from cif_system_logo
+			where enabled=1 and group_id=? order
+			by order_number desc
+		</sql>
+	</operation>
+
+	<operation name="selectMaxOrderNumber">
+		<sql>
+			select max(order_number)
+			from cif_system_logo
+		</sql>
+	</operation>
+
+	<operation name="selectAllByEnabledAndNamePage" multiplicity="many" paging="true">
+		<extraparams>
+			<param name="enabled" javatype="java.lang.Boolean"/>
+			<param name="name" javatype="java.lang.String"/>
+			<param name="groupId" javatype="long"/>
+		</extraparams>
+		<sql>
+			select id, file_name, code, name,
+			gmt_create,
+			gmt_modified,modifier,
+			group_id,order_number,enabled, image_resource_id
+			from
+			cif_system_logo
+			where 1=0
+		</sql>
+		<sqlmap>
+				<![CDATA[ 
+			${cdata-start}
+           		select id, file_name, code, name,
+				gmt_create, gmt_modified,modifier,
+				group_id,order_number,enabled , image_resource_id
+				from cif_system_logo
+			${cdata-end}
+			 <where>
+				<if test="enabled != null">
+			 			and enabled=#enabled#
+				</if>	
+				 <if test="name != null and name != ''"> 
+						and name like '%'||#name#||'%'
+                 </if>
+                 <if test="groupId == 0">  
+			            and group_id = #groupId#
+                 </if>	
+			 </where>
+		   order by order_number desc
+    			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="selectByIds" multiplicity="many">
+		<extraparams>
+			<param name="ids" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select id, file_name, code, name,
+			gmt_create,
+			gmt_modified,modifier,
+			group_id,order_number,enabled , image_resource_id
+			from
+			cif_system_logo where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				${cdata-start}
+				select id, file_name, code, name,
+				gmt_create, gmt_modified,modifier,
+				group_id,order_number,enabled , image_resource_id
+				from cif_system_logo
+				${cdata-end}
+				<where>
+					<foreach open="id in (" close=")" separator="," collection="ids" item="item">
+						#ids[]#
+					</foreach>                          
+                </where>  
+			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="selectMaxGmtModified">
+		<sql>
+			select max(gmt_modified)
+			from cif_system_logo
+		</sql>
+	</operation>
+
+	<operation name="selectByGmtModified" multiplicity="many">
+		<sql>
+			select id, file_name, code, name,
+			gmt_create,
+			gmt_modified,modifier,
+			group_id,order_number,enabled, image_resource_id
+			from
+			cif_system_logo where gmt_modified &gt;?
+		</sql>
+	</operation>
+
+	<operation name="updateEnabledById">
+		<sql>
+			update cif_system_logo set enabled=?,gmt_modified=@db@.sysdate
+			where
+			id=?
+		</sql>
+	</operation>
+
+	<operation name="updateOrderNumberById">
+		<sql>
+			update cif_system_logo set order_number=?,gmt_modified=@db@.sysdate
+			where id=?
+		</sql>
+	</operation>
+
+	<operation name="updateEnabledByIds">
+		<extraparams>
+			<param name="enabled" javatype="boolean"/>
+			<param name="ids" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			update cif_system_logo set enabled=1
+			where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				${cdata-start}
+				update cif_system_logo set enabled=#enabled#,gmt_modified=@db@.sysdate
+				${cdata-end}
+				<where>
+					<foreach open="id in (" close=")" separator="," collection="ids" item="item">
+						#ids[]#
+					</foreach>                          
+                </where>  
+			]]>
+		</sqlmap>
+	</operation>
+</table>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="one_auth_identity_photo">
+    <operation name="insert">
+        <sql>
+            insert into one_auth_identity_photo
+            (id, one_auth_id, creater, gmt_create, gmt_modified, front_photo_resources_id, back_photo_resources_id, modifier)
+            values
+            (?, ?, ?, @db@.sysdate, @db@.sysdate, ?, ?, ?);
+        </sql>
+    </operation>
+    <operation name="selectById">
+        <sql>
+            select id, one_auth_id, creater, gmt_create, gmt_modified, front_photo_resources_id, back_photo_resources_id, modifier
+            from one_auth_identity_photo where id=?
+        </sql>
+    </operation>
+    <operation name="selectByIdForUpdate">
+        <sql>
+            select id, one_auth_id, creater, gmt_create, gmt_modified, front_photo_resources_id, back_photo_resources_id, modifier
+            from one_auth_identity_photo where id=? for update nowait
+        </sql>
+    </operation>
+    <operation name="selectByOneAuthId">
+        <sql>
+            select id, one_auth_id, creater, gmt_create, gmt_modified, front_photo_resources_id, back_photo_resources_id, modifier
+            from one_auth_identity_photo where one_auth_id=?
+        </sql>
+    </operation>
+    <operation name="selectByOneAuthIdForUpdate">
+        <sql>
+            select id, one_auth_id, creater, gmt_create, gmt_modified, front_photo_resources_id, back_photo_resources_id, modifier
+            from one_auth_identity_photo where one_auth_id=? for update nowait
+        </sql>
+    </operation>
+    <operation name="updateById">
+        <sql>
+            update one_auth_identity_photo set front_photo_resources_id=? , back_photo_resources_id=? , modifier=? , gmt_modified=sysdate
+            where id=?
+        </sql>
+    </operation>
+</table>

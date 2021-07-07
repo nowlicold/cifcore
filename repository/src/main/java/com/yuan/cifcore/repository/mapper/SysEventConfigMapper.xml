@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuan.cifcore.repository.mapper.SysEventConfigMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, event_name, direct_distrib_core_thread_ct, direct_distrib_max_thread_ct, task_distrib_core_thread_count, task_distrib_max_thread_count, direct_handle_core_thread_ct, direct_handle_max_thread_ct, task_handle_core_thread_count, task_handle_max_thread_count, handleable_host_names, handleable_host_groups, distribute_max_retry_count, distribute_retry_interval, handle_max_retry_count, handle_retry_interval, gmt_create, gmt_modified, handleable_app_i_group_ids
+    </sql>
+
+</mapper>

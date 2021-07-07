@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_cell_black" sequence="seq_cif_cell_black">
+	<operation name="insert">
+		<sql>insert into cif_cell_black
+			(id,cell,enabled,gmt_create,gmt_modified,
+			from_user_id,current_user_id)
+			values(?,?,?,@db@.sysdate,@db@.sysdate,?,?)
+		</sql>
+	</operation>
+
+	<operation name="selectByCell">
+		<sql>
+			select id,cell,enabled,gmt_create,gmt_modified,
+			from_user_id,current_user_id from cif_cell_black where
+			cell=?
+		</sql>
+	</operation>
+	<operation name="selectById">
+		<sql>
+			select id,cell,enabled,gmt_create,gmt_modified,
+			from_user_id,current_user_id from cif_cell_black where id=?
+		</sql>
+	</operation>
+
+	<operation name="selectCountByCellEnabled">
+		<sql>
+			select count(*) from cif_cell_black where
+			cell=? and enabled=1
+		</sql>
+	</operation>
+
+	<operation name="updateEnabledByCells">
+		<extraparams>
+			<param name="enabled" javatype="boolean"/>
+			<param name="cells" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			update cif_cell_black set gmt_modified=@db@.sysdate where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+			update cif_cell_black set gmt_modified=@db@.sysdate,enabled=#enabled#
+			where cell in
+			<foreach open="(" close=")" separator="," collection="cells" item="item">
+				#cells[]#
+			</foreach>
+			]]>
+		</sqlmap>
+	</operation>
+	<!-- 查询复用参数 -->
+	<extraparams name="searchParameters">
+		<param name="cell" javatype="java.lang.String"/>
+		<param name="enabled" javatype="java.lang.Boolean"/>
+		<param name="fromUserId" javatype="java.lang.String"/>
+		<param name="currentUserId" javatype="java.lang.String"/>
+		<param name="gmtCreateStart" javatype="java.util.Date"/>
+		<param name="gmtCreateEnd" javatype="java.util.Date"/>
+	</extraparams>
+
+	<!-- 查询复用条件sql -->
+	<sql name="searchWhereSql">
+		<![CDATA[ 
+			 <where>
+			               <if test="cell != null and cell != ''"> 
+							    and cell=#cell#
+                            </if>
+						  	<if test="enabled != null"> 
+							     and enabled=#enabled#
+                            </if>
+                            <if test="fromUserId != null and fromUserId != ''"> 
+							    and from_user_id=#fromUserId#
+                            </if>
+                            <if test="currentUserId != null and currentUserId != ''"> 
+							    and current_user_id=#currentUserId#
+                            </if>
+                            <if test="gmtCreateStart != null">                              
+							     and gmt_create &gt;= #gmtCreateStart#
+                            </if>
+                              <if test="gmtCreateEnd != null">                              
+							     and gmt_create &lt;= #gmtCreateEnd#
+                            </if>
+                     </where>
+		]]>
+	</sql>
+	<operation name="search" multiplicity="many" paging="true">
+		<extraparams>
+			<param ref="searchParameters"/>
+		</extraparams>
+		<sql>
+			select id,cell,enabled,gmt_create,gmt_modified,
+			from_user_id,current_user_id from cif_cell_black
+			where 1=0
+		</sql>
+		<sqlmap>
+				<![CDATA[ 
+                      select id,cell,enabled,gmt_create,gmt_modified,
+			from_user_id,current_user_id from cif_cell_black
+				<include refid="searchWhereSql"/>	
+				order by id desc
+    			]]>
+		</sqlmap>
+	</operation>
+
+
+</table>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd">
+<table sqlname="CIF_USER_LOG" sequence="SEQ_CIF_USER_LOG">
+	<operation name="insert">
+		<sql>
+			insert into cif_user_log
+			(id, user_id, action, content,
+			gmt_create, creator)
+			values
+			(?, ?, ?, ?, @db@.sysdate, ?)
+		</sql>
+	</operation>
+	<!-- 根据时间段统计出每天会员登录的数量 -->
+	<operation name="selectEveryDayLoginCountGroupByDate" multiplicity="many" resultClass="java.util.HashMap">
+		<extraparams>
+			<param name="beginCreateDate" javatype="java.util.Date"/>
+			<param name="endCreateDate" javatype="java.util.Date"/>
+		</extraparams>
+		<sql>
+			select to_char(gmt_create,'yyyy-mm-dd') as
+			login_date,count(user_id) as loginName
+			from
+			cif_user_log
+			where 1=0
+		</sql>
+		<sqlmap>
+		<![CDATA[
+			${cdata-start}
+				select to_char(gmt_create,'yyyy-mm-dd') as login_date,count(distinct(user_id)) as login_count
+				from cif_user_log where action='USER_LOGIN'
+				and gmt_create>=#beginCreateDate#
+                and gmt_create<=#endCreateDate# group by
+				to_char(gmt_create,'yyyy-mm-dd')
+			${cdata-end}
+		]]>
+		</sqlmap>
+	</operation>
+	<operation name="search" paging="true" multiplicity="many">
+		<extraparams>
+			<param name="userId" javatype="java.lang.String"/>
+			<param name="action" javatype="java.lang.String"/>
+			<param name="beginDate" javatype="java.util.Date"/>
+			<param name="endDate" javatype="java.util.Date"/>
+			<param name="orderBy" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select id, user_id, action, content,
+			gmt_create, creator from
+			cif_user_log where user_id='userId' and
+			action='action' and
+			gmt_create
+			&gt;= 'beginDate' and gmt_create
+			&lt;= 'endDate'
+		</sql>
+		<sqlmap>
+			<![CDATA[
+    	     ${cdata-start}
+    	     	select id, user_id, action, content,
+				gmt_create, creator from
+				cif_user_log
+				 		${cdata-end}
+					    <where>
+						  	<if test="userId != null and userId != ''">
+	     			          ${cdata-start}
+							    	and user_id=#userId#
+	                    	  ${cdata-end}
+                            </if>
+                            <if test="action != null and action != ''">
+	     			          ${cdata-start}
+							    	and action=#action#
+	                    	  ${cdata-end}
+                            </if>
+                             <if test="beginDate != null">
+	     			          ${cdata-start}
+							    	and gmt_create >=#beginDate#
+	                    	  ${cdata-end}
+                            </if>
+                             <if test="endDate != null">
+	     			          ${cdata-start}
+							    	and gmt_create <= #endDate#
+	                    	  ${cdata-end}
+                            </if>
+                        </where>
+                        
+                        
+              ]]>
+		<if test="orderBy != null and orderBy != ''">
+		     			          ${cdata-start}
+								    	order by $orderBy$
+		                    	  ${cdata-end}
+	                         </if></sqlmap>
+
+	</operation>
+</table>

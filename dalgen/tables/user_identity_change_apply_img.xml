@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="user_identity_change_apply_img" sequence="seq_user_identity_cg_apply_img">
+	<select type="byPk"/>
+	<operation name="insert">
+		<sql>
+			insert into user_identity_change_apply_img
+			(id, apply_id, gmt_create, gmt_modified, type)
+			values
+			(?, ?, @db@.sysdate, @db@.sysdate, ?);
+		</sql>
+	</operation>
+
+	<operation name="selectByApplyId" multiplicity="many">
+		<sql>
+			${SELECT_TABLE} where apply_id=?
+		</sql>
+	</operation>
+</table>

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE table SYSTEM "http://benchframework.org/schema/dalgen/dalgen-table.dtd"><table sqlname="cif_forbidden">
+	<operation name="insert">
+		<sql>
+			insert into cif_forbidden
+			(id, forbidden_object_type,
+			forbidden_object_id, status, forbidden_reason,
+			enabled, gmt_start,
+			gmt_end,
+			gmt_create, gmt_modified,
+			forbidden_minutes, memo,
+			forbidden_action_type_id, operator_type,
+			operator_id ,biz_unique_id)
+			values
+			(?, ?, ?, ?,
+			?,
+			?, ?, ?, @db@.sysdate,@db@.sysdate,
+			?, ?, ?,
+			?, ?
+			,?)
+
+		</sql>
+	</operation>
+
+
+	<operation name="selectById">
+		<sql>
+			select id, forbidden_object_type, forbidden_object_id, status,
+			forbidden_reason, enabled, gmt_start, gmt_end, gmt_create,
+			gmt_modified, forbidden_minutes, memo, forbidden_action_type_id,
+			operator_type, operator_id ,biz_unique_id from cif_forbidden where
+			id=?
+		</sql>
+	</operation>
+
+	<operation name="selectByIdForUpdate">
+		<sql>
+			select id, forbidden_object_type, forbidden_object_id, status,
+			forbidden_reason, enabled, gmt_start, gmt_end, gmt_create,
+			gmt_modified, forbidden_minutes, memo, forbidden_action_type_id,
+			operator_type, operator_id ,biz_unique_id from cif_forbidden where
+			id=?
+			for update
+			nowait
+		</sql>
+	</operation>
+
+	<operation name="selectMaxGmtEndByForbiddenObjectIdsAndForbiddenObjectTypes">
+		<extraparams>
+			<param name="forbiddenObjectIds" javatype="java.util.List"/>
+			<param name="forbiddenObjectTypes" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			select id, forbidden_object_type, forbidden_object_id, status,
+			forbidden_reason, enabled, gmt_start, gmt_end, gmt_create,
+			gmt_modified, forbidden_minutes, memo, forbidden_action_type_id,
+			operator_type, operator_id ,biz_unique_id from cif_forbidden where
+			1=0
+		</sql>
+		<sqlmap>
+   			<![CDATA[
+   			select * from  (select id, forbidden_object_type, forbidden_object_id, status,
+			forbidden_reason, enabled, gmt_start, gmt_end, gmt_create,
+			gmt_modified, forbidden_minutes, memo, forbidden_action_type_id,
+			operator_type, operator_id ,biz_unique_id from cif_forbidden  
+			where enabled=1 and gmt_end &gt;=sysdate 
+                
+                    <if test="forbiddenObjectIds != null and forbiddenObjectIds.isEmpty()">
+							  and
+							   <foreach open="forbidden_object_id in (" close=")" separator="," collection="forbiddenObjectIds" item="item">
+									 	#forbiddenObjectIds[]#
+							   </foreach>
+                    </if>
+                    <if test="forbiddenObjectTypes != null and forbiddenObjectTypes.isEmpty()">
+							  and
+							   <foreach open="forbidden_object_type in (" close=")" separator="," collection="forbiddenObjectTypes" item="item">
+									 	#forbiddenObjectTypes[]#
+							   </foreach>
+                    </if>
+           	   
+			order by gmt_end desc) where rownum=1 
+   			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="selectMaxGmtEndByForbiddenObjectIdsAndForbiddenObjectTypesAndActionTypeId">
+		<extraparams>
+			<param name="forbiddenObjectIds" javatype="java.util.List"/>
+			<param name="forbiddenObjectTypes" javatype="java.util.List"/>
+			<param name="forbiddenActionTypeId" javatype="long"/>
+		</extraparams>
+		<sql>
+			select id, forbidden_object_type, forbidden_object_id, status,
+			forbidden_reason, enabled, gmt_start, gmt_end, gmt_create,
+			gmt_modified, forbidden_minutes, memo, forbidden_action_type_id,
+			operator_type, operator_id ,biz_unique_id from cif_forbidden where
+			1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[
+   			select * from  (select id, forbidden_object_type, forbidden_object_id, status,
+			forbidden_reason, enabled, gmt_start, gmt_end, gmt_create,
+			gmt_modified, forbidden_minutes, memo, forbidden_action_type_id,
+			operator_type, operator_id ,biz_unique_id from cif_forbidden
+			where enabled=1 and gmt_end &gt;=sysdate
+                
+                    <if test="forbiddenObjectIds != null and forbiddenObjectIds.isEmpty()">
+							  and
+							   <foreach open="forbidden_object_id in (" close=")" separator="," collection="forbiddenObjectIds" item="item">
+									 	#forbiddenObjectIds[]#
+							   </foreach>
+                    </if>
+                    <if test="forbiddenObjectTypes != null and forbiddenObjectTypes.isEmpty()">
+							  and
+							   <foreach open="forbidden_object_type in (" close=")" separator="," collection="forbiddenObjectTypes" item="item">
+									 	#forbiddenObjectTypes[]#
+							   </foreach>
+                    </if>
+                    <if test="forbiddenActionTypeId == 0">
+						and forbidden_action_type_id=#forbiddenActionTypeId#
+					</if>
+           	   
+			order by gmt_end desc) where rownum=1
+   			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="selectCountByForbiddenObjectIdsAndForbiddenObjectTypes">
+		<extraparams>
+			<param name="forbiddenObjectIds" javatype="java.util.List"/>
+			<param name="forbiddenObjectTypes" javatype="java.util.List"/>
+			<param name="status" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			select count(*) from cif_forbidden where 1=0
+		</sql>
+		<sqlmap>
+   			<![CDATA[
+   			select count(*) from cif_forbidden where status=#status#
+					<if test="forbiddenObjectIds != null and forbiddenObjectIds.isEmpty()">
+							  and
+							   <foreach open="forbidden_object_id in (" close=")" separator="," collection="forbiddenObjectIds" item="item">
+									 	#forbiddenObjectIds[]#
+							   </foreach>
+                    </if>
+                    <if test="forbiddenObjectTypes != null and forbiddenObjectTypes.isEmpty()">
+							  and
+							   <foreach open="forbidden_object_type in (" close=")" separator="," collection="forbiddenObjectTypes" item="item">
+									 	#forbiddenObjectTypes[]#
+							   </foreach>
+                    </if>
+   			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="selectByBizUniqueId">
+		<sql>
+			select id, forbidden_object_type, forbidden_object_id, status,
+			forbidden_reason, enabled, gmt_start, gmt_end, gmt_create,
+			gmt_modified, forbidden_minutes, memo, forbidden_action_type_id,
+			operator_type, operator_id ,biz_unique_id from cif_forbidden where
+			biz_unique_id=?
+		</sql>
+	</operation>
+
+	<operation name="selectByStatusGmtEndAndEnabled" multiplicity="many">
+		<extraparams>
+			<param name="status" javatype="java.lang.String"/>
+			<param name="count" javatype="int"/>
+		</extraparams>
+		<sql>
+			select id, forbidden_object_type, forbidden_object_id, status,
+			forbidden_reason, enabled, gmt_start, gmt_end, gmt_create,
+			gmt_modified, forbidden_minutes, memo, forbidden_action_type_id,
+			operator_type, operator_id ,biz_unique_id from cif_forbidden where
+			1=0
+		</sql>
+		<sqlmap>
+   			<![CDATA[
+   			select * from(
+   			select id, forbidden_object_type, forbidden_object_id, status,
+			forbidden_reason, enabled, gmt_start, gmt_end, gmt_create,
+			gmt_modified, forbidden_minutes, memo, forbidden_action_type_id,
+			operator_type, operator_id ,biz_unique_id from cif_forbidden where
+			status = #status# and gmt_end &lt;= sysdate and enabled=1
+			order by gmt_end )
+			where rownum &lt; #count#
+   			]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="updateEnabledById">
+		<sql>
+			update cif_forbidden set enabled=?,gmt_modified=@db@.sysdate
+			where id=?
+		</sql>
+	</operation>
+
+	<operation name="updateStatusAndBizUniqueIdById">
+		<sql>
+			update cif_forbidden set
+			status=?,biz_unique_id=?,gmt_modified=@db@.sysdate where id=?
+		</sql>
+	</operation>
+	
+		<operation name="updateStatusAndBizUniqueIdAndEnabledById">
+		<sql>
+			update cif_forbidden set
+			status=?,biz_unique_id=?,enabled=?,gmt_modified=@db@.sysdate where id=?
+		</sql>
+	</operation>
+
+	<operation name="updateForbiddenInfoById" paramtype="object">
+		<sql>
+			update cif_forbidden set
+			status = ?,
+			forbidden_reason = ?,
+			gmt_start = ?,
+			gmt_end = ?,
+			gmt_modified = sysdate,
+			forbidden_minutes =
+			?,
+			memo = ?,
+			operator_type = ?,
+			forbidden_action_type_id = ?,
+			operator_id =
+			? ,
+			biz_unique_id = ?
+			where id = ?
+		</sql>
+		<sqlmap><trim prefix="set" suffixOverrides=","/><if test="status != null and status != ''">
+	     			          ${cdata-start}
+							    	, status=#status#
+	                    	  ${cdata-end}
+                            </if><if test="memo != null and memo != ''">
+	     			          ${cdata-start}
+							    	, memo=#memo#
+	                    	  ${cdata-end}
+                            </if><if test="operatorId != null and operatorId != ''">
+	     			          ${cdata-start}
+							    	, operator_id=#operatorId#
+	                    	  ${cdata-end}
+                            </if><if test="bizUniqueId != null and bizUniqueId != ''">
+	     			          ${cdata-start}
+							    	, biz_unique_id=#bizUniqueId#
+	                    	  ${cdata-end}
+                            </if></sqlmap>
+	</operation>
+
+	<!-- 查询复用参数 -->
+	<extraparams name="searchParameters">
+		<param name="id" javatype="java.lang.String"/>
+		<param name="forbiddenObjectId" javatype="java.lang.String"/>
+		<param name="forbiddenObjectType" javatype="java.lang.String"/>
+		<param name="userSubDomain" javatype="java.lang.String"/>		
+		<param name="enabled" javatype="java.lang.Boolean"/>
+		<param name="forbiddenActionTypeId" javatype="long"/>
+		<param name="minGmtEnd" javatype="java.util.Date"/>
+		<param name="maxGmtEnd" javatype="java.util.Date"/>
+	</extraparams>
+
+	<!-- 查询复用条件sql -->
+	<sql name="searchWhereSql">
+		<![CDATA[ 
+			<where>
+				<if test="id != null and id != ''">
+						and id=#id#
+				</if>	
+			 	<if test="forbiddenObjectId != null and forbiddenObjectId != ''">
+						and forbidden_object_id=#forbiddenObjectId#
+				</if>
+				<if test="forbiddenObjectType != null and forbiddenObjectType != ''">
+						and forbidden_object_type=#forbiddenObjectType#
+				</if>		
+				<if test="enabled != null">
+                 		and enabled=#enabled#
+                </if>
+                <if test="forbiddenActionTypeId != null and forbiddenActionTypeId != ''">
+						and forbidden_action_type_id=#forbiddenActionTypeId#
+				</if>	
+                <if test="minGmtEnd != null">
+    			        and gmt_end &gt;= #minGmtEnd#
+                 </if>
+                 <if test="maxGmtEnd != null">
+					    and gmt_end &lt;= #maxGmtEnd#
+                 </if>
+                <if test="userSubDomain != null and userSubDomain != ''">
+						and exists (select 1 from cif_user a where a.user_id=forbidden_object_id and forbidden_object_type='USER' and a.sub_domain=#userSubDomain#)
+				</if>             
+			</where>
+		]]>
+	</sql>
+
+	<operation name="search" multiplicity="many" paging="true">
+		<extraparams>
+			<param ref="searchParameters"/>
+		</extraparams>
+		<sql>
+			select id, forbidden_object_type, forbidden_object_id, status,
+			forbidden_reason, enabled, gmt_start, gmt_end, gmt_create,
+			gmt_modified, forbidden_minutes, memo, forbidden_action_type_id,
+			operator_type, operator_id ,biz_unique_id from cif_forbidden
+			where 1=0
+		</sql>
+		<sqlmap>
+			<![CDATA[ 
+			select id, forbidden_object_type, forbidden_object_id, status,
+			forbidden_reason, enabled, gmt_start, gmt_end, gmt_create,
+			gmt_modified, forbidden_minutes, memo, forbidden_action_type_id,
+			operator_type, operator_id ,biz_unique_id from cif_forbidden
+			<include refid="searchWhereSql"/>
+			order by gmt_create desc,gmt_end desc,id desc
+			]]>
+		</sqlmap>
+	</operation>
+
+
+
+</table>

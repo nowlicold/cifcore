@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuan.cifcore.repository.mapper.SysMonitorCollectConfigMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, collect_code, collect_name, send_queue_name, store_sub_path, cron_expression, collect_type, collect_target, single_collect, parse_script, properties, enabled, memo, gmt_create, gmt_modified, allow_collect_machine_names, allow_send_machine_names, store_in_minutes, send_in_minutes
+    </sql>
+
+</mapper>
